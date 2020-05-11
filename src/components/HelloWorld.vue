@@ -1,15 +1,29 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <button @click="readFirestore">click me</button>
+    {{ firebaseRead }}
   </div>
 </template>
 
 <script>
+const fb = require('../firebaseConfig.js')
 export default {
   name: 'HelloWorld',
+  methods: {
+    readFirestore() {
+        fb.testCollection.doc("M13aPHDYrvXxQQSFXQZl").get().then(res => {
+            console.log(res.data());
+             this.firebaseRead = res.data().test;
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+  },
   data () {
     return {
-      msg: 'Hello world!'
+      msg: 'Hello world!',
+      firebaseRead: 'firebase read...'
     }
   }
 }
