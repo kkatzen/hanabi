@@ -1,13 +1,21 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <button @click="readFirestore">click me</button>
+    <md-button @click="readFirestore">click me</md-button>
     {{ firebaseRead }}
+    <div class="my-cards">
+      <h1>My cards</h1>
+      <card color="red" number=2></card>
+      <card color="blue" number=5></card>
+      <card color="green" number=2></card>
+      <card color="blue" number=4></card>
+    </div>
   </div>
 </template>
 
 <script>
 const fb = require('../firebaseConfig.js')
+import Card from '@/components/Card'
+
 export default {
   name: 'HelloWorld',
   methods: {
@@ -22,9 +30,11 @@ export default {
   },
   data () {
     return {
-      msg: 'Hello world!',
       firebaseRead: 'firebase read...'
     }
+  },
+  components: {
+    'card': Card
   }
 }
 </script>
@@ -44,5 +54,11 @@ li {
 }
 a {
   color: #42b983;
+}
+.my-cards {
+  border: 2px solid grey;
+  height: 200px;
+  margin: auto;
+  width: 884px; /* 220 * 4 for cards + 2*2 for border */
 }
 </style>
