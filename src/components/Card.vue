@@ -4,9 +4,10 @@
         <md-card-header>
             <div class="md-title">{{number}}</div>
         </md-card-header>
-        <div v-if="false">
-             <md-card-actions>
-                <md-button>Play Card</md-button>
+        <div v-if="isPlayable">
+          <md-card-actions>
+            <md-button @click="play">Play</md-button>
+            <md-button @click="discard">Discard</md-button>
          </md-card-actions>
         </div>
     </md-card>
@@ -23,15 +24,31 @@ export default {
 			type: String,
 			required: true,
 			default: "r1a"
+    },
+    cardManager: {
+			required: true,
+    },
+    playerIndex: {
+        required: true,
+    },
+    cardIndex: {
+        required: true,
+    },
+    isPlayable: {
+      required: true,
     }
 	},
 	computed: { 
-        color() {
-            return colorMap[this.uniqueId.substring(0,1)]
-        },
-        number() {
-            return this.uniqueId.substring(1,2)
-        },
+    color() {
+        return colorMap[this.uniqueId.substring(0,1)]
+    },
+    number() {
+        return this.uniqueId.substring(1,2)
+    },
+	},
+	methods: {
+		play() {this.cardManager.playCard(this.playerIndex, this.cardIndex)},
+		discard() {this.cardManager.discardAndDraw(this.playerIndex, this.cardIndex)},
 	}
 }
 </script>

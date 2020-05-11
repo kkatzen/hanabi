@@ -7,12 +7,16 @@
     <md-button @click="playCardPrompt">Play Card</md-button>
 
     <div class="my-cards"
-         v-for="(hand, index) in cardManager.playerHands"
-         :key=index>
-      <h1>Player {{index}}</h1>
-      <card v-for="cardId in hand" 
+         v-for="(hand, playerIndex) in cardManager.playerHands"
+         :key=playerIndex>
+      <h1>Player {{playerIndex}}</h1>
+      <card v-for="(cardId, cardIndex) in hand" 
             :key=cardId
-            :uniqueId=cardId>
+            :uniqueId=cardId
+            :playerIndex=playerIndex
+            :cardIndex=cardIndex
+            :cardManager=cardManager
+            isPlayable=true>
       </card>
     </div>
 
