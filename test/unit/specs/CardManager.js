@@ -1,17 +1,17 @@
-import GamePlay from '@/GamePlay'
+import CardManager from '@/GamePlay'
 
 describe('Gameplay', () => {
 
   it('intantiate random game', () => {
-    let myGame = new GamePlay(3, 4);
+    let myGame = new CardManager(3, 4);
 
-    expect(myGame.cardMap.players.length).toEqual(3);
-    expect(myGame.cardMap.players[0].length).toEqual(4);
+    expect(myGame.playerHands.length).toEqual(3);
+    expect(myGame.playerHands[0].length).toEqual(4);
     expect(myGame.cardMap.deck.length).toEqual(40 - 3*4);
   })
 
   it('discarding and draw a new card', () => {
-    let myGame = new GamePlay(3, 4);
+    let myGame = new CardManager(3, 4);
 
     let nextCardInDeck = myGame.cardMap.deck[myGame.cardMap.deck.length - 1];
     let previousDeckLength = myGame.cardMap.deck.length;
@@ -19,8 +19,8 @@ describe('Gameplay', () => {
     myGame.discardAndDraw(0, 0);
 
     // I drew the new card
-    expect(myGame.cardMap.players[0].length).toEqual(4);
-    expect(myGame.cardMap.players[0]).toContain(nextCardInDeck);
+    expect(myGame.playerHands[0].length).toEqual(4);
+    expect(myGame.playerHands[0]).toContain(nextCardInDeck);
   
     // Deck has one fewer card
     expect(myGame.cardMap.deck.length).toEqual(previousDeckLength - 1);
@@ -28,7 +28,7 @@ describe('Gameplay', () => {
 
   // TOOD(kk): test palye dintiali state
   it('discarding when deck is empty', () => {
-    let myGame = new GamePlay(3, 4);
+    let myGame = new CardManager(3, 4);
     myGame._forceNewCardMap({
       players: [['r1a','g2a']],
       played: {},
@@ -45,7 +45,7 @@ describe('Gameplay', () => {
   })
 
   it('intantiate with specific cardmap', () => {
-    let myGame = new GamePlay(1,2);
+    let myGame = new CardManager(1,2);
 
     myGame._forceNewCardMap({
       players: [['r1a'],['r2a']],
@@ -53,13 +53,13 @@ describe('Gameplay', () => {
       deck: ['r1b','r2b'],
     });
 
-    expect(myGame.cardMap.players.length).toEqual(2);
-    expect(myGame.cardMap.players[0].length).toEqual(1);
+    expect(myGame.playerHands.length).toEqual(2);
+    expect(myGame.playerHands[0].length).toEqual(1);
     expect(myGame.cardMap.deck.length).toEqual(2);
   })
 
   it('valid card play', () => {
-    let myGame = new GamePlay(1,1);
+    let myGame = new CardManager(1,1);
 
     myGame._forceNewCardMap({
       players: [['r1a'],['r2a']],
@@ -77,13 +77,10 @@ describe('Gameplay', () => {
   })
 
   it('invalid card play', () => {
-    let myGame = new GamePlay(1,1);
+    let myGame = new CardManager(1,1);
 
-    myGame._forceNewCardMap({
-      players: [['r5a'],['r2a']],
-      played: {'r': 1},
-      deck: ['g1b','y2a'],
-    });
+    myGame._forceNewCardMap([/*hands*/['r5a'],['r2a']],
+    /*deck*/ ['g1b','y2a']);
     
     expect(myGame.playCard(0,0)).toEqual(false);
 
@@ -93,5 +90,4 @@ describe('Gameplay', () => {
       deck: ['g1b','y2a'],
     });
   })
-
 })

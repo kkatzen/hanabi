@@ -3,21 +3,11 @@
     <md-button @click="readFirestore">click me</md-button>
     {{ firebaseRead }}
 
+    <played-cards :cards=cardManager.progress />
     <md-button @click="playCardPrompt">Play Card</md-button>
 
-    <div class="my-cards">
-      <card :uniqueId="redPlayed">
-      </card>
-      <card :uniqueId="bluePlayed">
-      </card>
-      <card :uniqueId="greenPlayed">
-      </card>
-      <card :uniqueId="yellowPlayed">
-      </card>
-    </div>
-
     <div class="my-cards"
-         v-for="(hand, index) in gamePlay.cardMap.players"
+         v-for="(hand, index) in cardManager.playerHands"
          :key=index>
       <h1>Player {{index}}</h1>
       <card v-for="cardId in hand" 
@@ -27,7 +17,7 @@
     </div>
 
     <h1>Deck</h1>
-    <card v-for="cardId in gamePlay.cardMap.deck"
+    <card v-for="cardId in cardManager.deck"
           :key=cardId
           :uniqueId=cardId>
     </card>
@@ -38,14 +28,15 @@
 <script>
 const fb = require('../firebaseConfig.js')
 import Card from '@/components/Card'
-import GamePlay from '@/GamePlay'
+import PlayedCards from '@/components/PlayedCards'
+import CardManager from '@/CardManager'
 
 export default {
   name: 'HelloWorld',
   data () {
     return {
       firebaseRead: 'firebase read...',
-      gamePlay: new GamePlay(3,2)
+      cardManager: new CardManager(3,2)
     }
   },
   methods: {
@@ -61,27 +52,13 @@ export default {
       console.log("playCardPrompt");
       let playerIndex = prompt("which player?");
       let cardIndex = prompt("which card?");
-      this.gamePlay.playCard(playerIndex, cardIndex)
-      console.log(this.gamePlay.cardMap);
+      this.cardManager.playCard(playerIndex, cardIndex)
+      console.log(this.cardManager.cardMap);
     }
   },
   components: {
-    'card': Card
-  },
-  computed: { 
-      yellowPlayed() {
-        console.log("yellowPlayed", this.gamePlay.cardMap);
-          return 'y' + this.gamePlay.cardMap.played['y']
-      },
-      redPlayed() {
-          return 'r' + this.gamePlay.cardMap.played['r']
-      },
-      bluePlayed() {
-          return 'b' + this.gamePlay.cardMap.played['b']
-      },
-      greenPlayed() {
-          return 'g' + this.gamePlay.cardMap.played['g']
-      },
+    'card': Card,
+    'played-cards': PlayedCards
   }
 }
 </script>

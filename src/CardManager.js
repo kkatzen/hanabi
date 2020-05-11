@@ -1,13 +1,11 @@
-class GamePlay {
+class CardManager {
     constructor(numPlayers, startingHandSize) {
-        this.cardMap = {
-            players: [],
-            played: {'r':0, 'y':0, 'b':0, 'g':0},
-            deck: [],
-        };
+        this.playerHands = [];
+        this.deck = [];
+        this.progress = {'r':0, 'y':0, 'b':0, 'g':0, 'p':0};
 
         let unshuffledDeck = [];
-        for (let color of ["r","b","g","y"]){
+        for (let color of ["r","b","g","y","p"]){
             for (let id of ["1a","1b","1c","2a","2b","3a","3b","4a","4b","5a"]) {
                 unshuffledDeck.push(color + id);
             }
@@ -18,27 +16,25 @@ class GamePlay {
             while (hand.length < startingHandSize) {
                 hand.push(shuffledDeck.pop());
             }
-            console.log(hand);
-            this.cardMap.players.push(hand);
+            this.playerHands.push(hand);
         }
-        this.cardMap.deck = shuffledDeck;
-        console.log(this.cardMap);
+        this.deck = shuffledDeck;
     }
 
     discardAndDraw(playerIndex, cardIndex) {
-        this.cardMap.players[playerIndex].splice(cardIndex, 1);
-        if (this.cardMap.deck.length > 0) {
-            this.cardMap.players[playerIndex].push(this.cardMap.deck.pop());
+        this.playerHands[playerIndex].splice(cardIndex, 1);
+        if (this.deck.length > 0) {
+            this.playerHands[playerIndex].push(this.deck.pop());
         }
     }
 
     playCard(playerIndex, cardIndex) {
-        console.log("playCard", playerIndex, cardIndex);
-        const color = this.cardMap.players[playerIndex][cardIndex].substr(0,1);
-        const num = this.cardMap.players[playerIndex][cardIndex].substr(1,1);
-        if (this.cardMap.played[color] + 1 == num) {
-            this.cardMap.played[color]++;
+        const color = this.playerHands[playerIndex][cardIndex].substr(0,1);
+        const num = this.playerHands[playerIndex][cardIndex].substr(1,1);
+        if (this.progress[color] + 1 == num) {
+            this.progress[color]++;
             this.discardAndDraw(playerIndex, cardIndex);
+            console.log("this.cardMap", this.cardMap);
             return true;
         }
         return false;
@@ -59,10 +55,11 @@ class GamePlay {
         return array;
       }
 
-    _forceNewCardMap(cardMap) {
-        this.cardMap = cardMap;
+    _forceNewCardMap(playerHands, deck) {
+        this.playerHands = playerHands;
+        this.deck = deck;
     }
 }
 
-//module.exports = GamePlay;
-export default GamePlay;
+//module.exports = CardManager;
+export default CardManager;

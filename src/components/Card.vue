@@ -15,17 +15,16 @@
 
 <script>
 
-const colorMap = {'r': '#ebabab', 'b':'#bdddfc', 'g':'#abebb6', 'y':'#f5f38c'}
+const colorMap = {'r': '#ebabab', 'b':'#bdddfc', 'g':'#abebb6', 'y':'#f5f38c', 'p': '#d4bdf0'}
 export default {
-    name: 'Card',
+  name: 'Card',
 	props: {
 		uniqueId: {
 			type: String,
 			required: true,
 			default: "r1a"
-        }
+    }
 	},
-	template: `<h1>hello, {{ name }}!</h1>`,
 	computed: { 
         color() {
             return colorMap[this.uniqueId.substring(0,1)]
