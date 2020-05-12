@@ -3,6 +3,7 @@ class CardManager {
         this.playerHands = [];
         this.deck = [];
         this.progress = {'r':0, 'y':0, 'b':0, 'g':0, 'p':0};
+        this.discards = {'r':[], 'y':[], 'b':[], 'g':[], 'p':[]};
 
         let unshuffledDeck = [];
         for (let color of ["r","b","g","y","p"]){
@@ -22,7 +23,7 @@ class CardManager {
     }
 
     discardAndDraw(playerIndex, cardIndex) {
-        this.playerHands[playerIndex].splice(cardIndex, 1);
+        let discarded = this.playerHands[playerIndex].splice(cardIndex, 1);
         if (this.deck.length > 0) {
             this.playerHands[playerIndex].push(this.deck.pop());
         }
@@ -55,9 +56,16 @@ class CardManager {
         return array;
       }
 
-    _forceNewCardMap(playerHands, deck) {
+    _forceSetPlayerHands(playerHands) {
         this.playerHands = playerHands;
+    }
+
+    _forceSetDeck(deck) {
         this.deck = deck;
+    }
+
+    _forceSetProgress(progress) {
+        this.progress = progress;
     }
 }
 

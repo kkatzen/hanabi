@@ -21,7 +21,7 @@ module.exports = {
   coverageDirectory: '<rootDir>/test/unit/coverage',
   collectCoverageFrom: [
     'src/**/*.{js,vue}',
-    'src/gamePlay.js',
+    'src/CardManager.test.js',
     '!src/main.js',
     '!src/router/index.js',
     '!**/node_modules/**'

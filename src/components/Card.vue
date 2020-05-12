@@ -16,7 +16,13 @@
 
 <script>
 
-const colorMap = {'r': '#ebabab', 'b':'#bdddfc', 'g':'#abebb6', 'y':'#f5f38c', 'p': '#d4bdf0'}
+const colorMap = {
+  'r':'#ebabab',
+  'b':'#bdddfc',
+  'g':'#abebb6',
+  'y':'#f5f38c',
+  'p': '#d4bdf0'
+};
 export default {
   name: 'Card',
 	props: {
@@ -26,16 +32,12 @@ export default {
 			default: "r1a"
     },
     cardManager: {
-			required: true,
     },
     playerIndex: {
-        required: true,
     },
     cardIndex: {
-        required: true,
     },
     isPlayable: {
-      required: true,
     }
 	},
 	computed: { 
@@ -47,7 +49,11 @@ export default {
     },
 	},
 	methods: {
-		play() {this.cardManager.playCard(this.playerIndex, this.cardIndex)},
+		play() {
+      if(!this.cardManager.playCard(this.playerIndex, this.cardIndex)) {
+        alert("invalid!");
+      }
+    },
 		discard() {this.cardManager.discardAndDraw(this.playerIndex, this.cardIndex)},
 	}
 }

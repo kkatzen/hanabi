@@ -3,8 +3,11 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import { firestorePlugin } from 'vuefire'
 const fb = require('./firebaseConfig.js')
+import firebase from 'firebase'
 
+Vue.use(firestorePlugin)
 Vue.config.productionTip = false
 
 // handle page reloads

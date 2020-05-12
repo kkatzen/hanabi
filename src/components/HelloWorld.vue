@@ -2,6 +2,9 @@
   <div class="hello">
     <md-button @click="readFirestore">click me</md-button>
     {{ firebaseRead }}
+    <br /><br />
+    documents:
+    {{game}}
 
     <played-cards :cards=cardManager.progress />
     <md-button @click="playCardPrompt">Play Card</md-button>
@@ -34,13 +37,21 @@ const fb = require('../firebaseConfig.js')
 import Card from '@/components/Card'
 import PlayedCards from '@/components/PlayedCards'
 import CardManager from '@/CardManager'
+import firebase from 'firebase'
+import { db } from '../main'
 
 export default {
   name: 'HelloWorld',
   data () {
     return {
       firebaseRead: 'firebase read...',
-      cardManager: new CardManager(3,2)
+      cardManager: new CardManager(3,2),
+      game: {},
+    }
+  },
+  firestore () {
+    return {
+      game: fb.gameCollection.doc("QsfkqNq3vCR4MbeMrw97")
     }
   },
   methods: {
