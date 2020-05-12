@@ -6,8 +6,8 @@
         </md-card-header>
         <div v-if="isPlayable">
           <md-card-actions>
-            <md-button @click="play">Play</md-button>
-            <md-button @click="discard">Discard</md-button>
+            <md-button @click=playCard>Play</md-button>
+            <md-button @click=discardCard>Discard</md-button>
          </md-card-actions>
         </div>
     </md-card>
@@ -15,7 +15,6 @@
 </template>
 
 <script>
-
 const colorMap = {
   'r':'#ebabab',
   'b':'#bdddfc',
@@ -30,8 +29,6 @@ export default {
 			type: String,
 			required: true,
 			default: "r1a"
-    },
-    cardManager: {
     },
     playerIndex: {
     },
@@ -48,21 +45,21 @@ export default {
         return this.uniqueId.substring(1,2)
     },
 	},
-	methods: {
-		play() {
-      if(!this.cardManager.playCard(this.playerIndex, this.cardIndex)) {
-        alert("invalid!");
-      }
+  methods: {
+    playCard() {
+      this.$emit('play-card', {cardIndex: this.cardIndex, playerIndex: this.playerIndex});
     },
-		discard() {this.cardManager.discardAndDraw(this.playerIndex, this.cardIndex)},
-	}
+    discardCard() {
+      this.$emit('discard-card', {cardIndex: this.cardIndex, playerIndex: this.playerIndex});
+    }
+  }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .card {
-  width: 200px;
+  width: 170px;
   float: left;
   margin: 10px;
 }

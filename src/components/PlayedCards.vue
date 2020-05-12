@@ -44,6 +44,6 @@ export default {
   border: 2px solid grey;
   height: 200px;
   margin: auto;
-  width: 1104px; /* 220 * 5 for cards + 2*2 for border */
+  width: 1004px;
 }
 </style>

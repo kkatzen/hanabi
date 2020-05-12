@@ -13,6 +13,7 @@ Vue.config.productionTip = false
 // handle page reloads
 let app
 fb.auth.onAuthStateChanged(user => {
+    console.log("onAuthStateChanged");
     if (!app) {
         app = new Vue({
             el: '#app',
