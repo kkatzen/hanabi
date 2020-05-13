@@ -1,7 +1,6 @@
 <template>
     <div>
         <md-button @click="createGame">Create a new game!!!</md-button>
-        <router-link :to="joinUrl">{{gameId}}</router-link>
     </div>
 </template>
 
@@ -16,11 +15,6 @@ export default {
     created: function () {
         console.log("CreateGame");
     },
-    data () {
-        return {
-            gameId: ""
-        }
-    },
     methods: {
         createGame() {
             let newGameState = createRandomGame(3,2);
@@ -28,7 +22,7 @@ export default {
             .add(newGameState)
             .then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
-                this.gameId = docRef.id;
+                this.$router.push("/join/" + docRef.id)
             })
             .catch((error) => {
                 console.error("Error adding document: ", error);

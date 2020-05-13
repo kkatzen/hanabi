@@ -1,16 +1,24 @@
 <template>
     <div>
         <div v-if="gameExists">
-            <md-button @click="deleteGame">Delete this game from firestore!!!</md-button>
-            <br />
-            Invite friends with this URL:
-            http://localhost:8080/#/join/{{gameId}}
-            <br />
-            Start game here:
-            <router-link :to="gameUrl">{{gameId}}</router-link>
+            <div v-if="isJoinPhase">
+                <h1>Invite your friends to join</h1>
+                <h2>http://localhost:8080/#/join/{{gameId}}</h2>
+                <p>
+                    <md-button @click="startGame">Start game!!!</md-button>
+                </p>
+                <p>
+                    <md-button @click="deleteGame">Cancel and delete</md-button>
+                </p>
+                <!--<router-link :to="gameUrl">{{gameId}}</router-link>-->
+            </div>
+            <div v-else>
+                Game!
+                <game-play :gameId=gameId />
+            </div>
         </div>
         <div v-else>
-            Missing game with id {{gameId}}
+            <h1>Missing game with id {{gameId}}</h1>
         </div>
     </div>
 </template>
@@ -20,6 +28,8 @@ const fb = require('../firebaseConfig.js')
 import {GameState, GameStateConverter, createRandomGame} from '@/GameState'
 import firebase from 'firebase'
 import { db } from '../main'
+import CardManager from '@/CardManager'
+import GamePlay from '@/components/GamePlay'
 
 export default {
     name: 'JoinGame',
@@ -28,18 +38,12 @@ export default {
             type: String,
         }
     },
-    created: function () {
-        console.log("JoinGame");
-        console.log(this.gameId);
-    },
     data () {
         return {
-            gameId: "",
             gameState: {},
         }
     },
     firestore () {
-        console.log("this.gameId", this.gameId);
         return {
             gameState: fb.gameCollection.doc(this.gameId)
         }
@@ -52,25 +56,42 @@ export default {
     },
     methods: {
         deleteGame() {
-        fb.gameCollection.doc(this.gameId).delete().then(function() {
-            console.log("Document successfully deleted!");
-        }).catch(function(error) {
-            console.error("Error removing document: ", error);
-        });
-        // why do i have to do this manually?
-        this.gameId = "";
+            fb.gameCollection.doc(this.gameId).delete().then(function() {
+                console.log("Document successfully deleted!");
+            }).catch(function(error) {
+                console.error("Error removing document: ", error);
+            });
+        },
+        startGame() {
+            let cardManager = new CardManager(Object.assign({}, this.gameState));
+            cardManager.nextPlayer();
+            this.updateGameState(cardManager.gameState);
+        },
+        updateGameState(gameState) {
+            console.log("updateGameState");
+            fb.gameCollection.withConverter(GameStateConverter).doc(this.gameId)
+            .set(gameState)
+            .then((docRef) => {
+                console.log("Success!");
+            })
+            .catch((error) => {
+                console.error("Error adding document: ", error);
+            });
         },
     },
     computed: { 
         gameExists() {
-            console.log("this.gameState", this.gameState);
             return this.gameState != undefined && this.gameState != null && this.gameState != {} && this.gameId != "" && this.gameId != undefined && this.gameId != null;
         },
         gameUrl() {
-            if(this.gameId)
-                return "/game/" + this.gameId;
-            return "";
+            return "/game/" + this.gameId;
+        },
+        isJoinPhase() {
+            return this.gameState.activePlayer == null;
         }
+    },
+    components: {
+        'game-play': GamePlay,
     },
 }
 </script>

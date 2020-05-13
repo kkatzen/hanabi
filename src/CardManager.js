@@ -9,6 +9,10 @@ class CardManager {
         return this._discardAndDraw(playerIndex, cardIndex, true);
     }
 
+    nextPlayer() {
+        this.gameState.activePlayer = 1;
+    }
+
     _discardAndDraw(playerIndex, cardIndex, actualDiscard) {
         let discarded = this.gameState.playerHands[playerIndex].splice(cardIndex, 1);
         console.log(discarded);
