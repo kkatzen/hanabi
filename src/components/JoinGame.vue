@@ -5,6 +5,13 @@
                 <h1>Invite your friends to join</h1>
                 <h2>http://localhost:8080/#/join/{{gameId}}</h2>
                 <p>
+                    <md-button @click="joinGame">Join game!!!</md-button>
+                </p>
+                <div v-for="(value, name) in this.gameState.playerHands" 
+                    :key=value>
+                    {{name}}
+                </div>
+                <p>
                     <md-button @click="startGame">Start game!!!</md-button>
                 </p>
                 <p>
@@ -25,7 +32,7 @@
 
 <script>
 const fb = require('../firebaseConfig.js')
-import {GameState, GameStateConverter, createRandomGame} from '@/GameState'
+import {GameState, GameStateConverter} from '@/GameState'
 import firebase from 'firebase'
 import { db } from '../main'
 import CardManager from '@/CardManager'
@@ -55,6 +62,13 @@ export default {
         },
     },
     methods: {
+        joinGame() {
+            const newPlayer = prompt("name?");
+            window.sessionStorage.setItem('firework_friend', newPlayer);
+            let cardManager = new CardManager(Object.assign({}, this.gameState));
+            cardManager.addPlayer(newPlayer);
+            this.updateGameState(cardManager.gameState);
+        },
         deleteGame() {
             fb.gameCollection.doc(this.gameId).delete().then(function() {
                 console.log("Document successfully deleted!");
@@ -64,7 +78,7 @@ export default {
         },
         startGame() {
             let cardManager = new CardManager(Object.assign({}, this.gameState));
-            cardManager.nextPlayer();
+            cardManager.dealCardsAndStartGame();
             this.updateGameState(cardManager.gameState);
         },
         updateGameState(gameState) {

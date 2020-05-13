@@ -5,31 +5,72 @@ class CardManager {
         this.gameState = gameState;
     }
 
-    discardAndDraw(playerIndex, cardIndex) {
-        return this._discardAndDraw(playerIndex, cardIndex, true);
+    discardAndDraw(playerKey, cardIndex) {
+        return this._discardAndDraw(playerKey, cardIndex, true);
+    }
+
+    dealCardsAndStartGame() {
+        let _shuffle = function(array) {
+            var currentIndex = array.length, temporaryValue, randomIndex;
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+              // Pick a remaining element...
+              randomIndex = Math.floor(Math.random() * currentIndex);
+              currentIndex -= 1;
+              // And swap it with the current element.
+              temporaryValue = array[currentIndex];
+              array[currentIndex] = array[randomIndex];
+              array[randomIndex] = temporaryValue;
+            }
+            return array;
+          }
+        let unshuffledDeck = [];
+        for (let color of ["r","b","g","y","p"]){
+            for (let id of ["1a","1b","1c","2a","2b","3a","3b","4a","4b","5a"]) {
+                unshuffledDeck.push(color + id);
+            }
+        }
+        let shuffledDeck = _shuffle(unshuffledDeck);
+        
+        for (let playerName in this.gameState.playerHands) { 
+            let hand = [];
+            while (hand.length < /*startingHandSize=*/4) {
+                hand.push(shuffledDeck.pop());
+            }
+            this.gameState.playerHands[playerName] = hand;
+        }
+        this.gameState.deck = shuffledDeck;
+        this.gameState.activePlayer = Object.keys(this.gameState.playerHands)[0];
     }
 
     nextPlayer() {
-        this.gameState.activePlayer = 1;
+        let players = Object.keys(this.gameState.playerHands);
+        let currentIndex = players.findIndex((i) => {return this.gameState.activePlayer == i});
+        let nextIndex = currentIndex + 1 == players.length ? 0 : currentIndex + 1;
+        this.gameState.activePlayer = players[nextIndex];
     }
 
-    _discardAndDraw(playerIndex, cardIndex, actualDiscard) {
-        let discarded = this.gameState.playerHands[playerIndex].splice(cardIndex, 1);
+    addPlayer(name) {
+        this.gameState.playerHands[name] = [];
+    }
+
+    _discardAndDraw(playerKey, cardIndex, actualDiscard) {
+        let discarded = this.gameState.playerHands[playerKey].splice(cardIndex, 1);
         console.log(discarded);
         if (actualDiscard) {
             this.gameState.discards.push(discarded[0]);
         }
         if (this.gameState.deck.length > 0) {
-            this.gameState.playerHands[playerIndex].push(this.gameState.deck.pop());
+            this.gameState.playerHands[playerKey].push(this.gameState.deck.pop());
         }
     }
 
-    playCard(playerIndex, cardIndex) {
-        const color = this.gameState.playerHands[playerIndex][cardIndex].substr(0,1);
-        const num = this.gameState.playerHands[playerIndex][cardIndex].substr(1,1);
+    playCard(playerKey, cardIndex) {
+        const color = this.gameState.playerHands[playerKey][cardIndex].substr(0,1);
+        const num = this.gameState.playerHands[playerKey][cardIndex].substr(1,1);
         if (this.gameState.progress[color] + 1 == num) {
             this.gameState.progress[color]++;
-            this._discardAndDraw(playerIndex, cardIndex, false);
+            this._discardAndDraw(playerKey, cardIndex, false);
             return true;
         }
         return false;

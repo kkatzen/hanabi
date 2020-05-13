@@ -6,7 +6,10 @@
       <div class="my-cards"
           v-for="(hand, playerIndex) in gameState.playerHands"
           :key=playerIndex>
-        <h1>Player {{playerIndex}}</h1>
+        <h1>
+          Player {{playerIndex}}
+          <span v-if="playerIndex == gameState.activePlayer"> - Active</span>
+        </h1>
         <card v-for="(cardId, cardIndex) in hand"
               v-on:play-card="playCard"
               v-on:discard-card="discardCard"
@@ -89,11 +92,13 @@ export default {
       if(!cardManager.playCard(cardInfo.playerIndex, cardInfo.cardIndex)) {
         alert("invalid!");
       }
+      cardManager.nextPlayer();
       this.updateGameState(cardManager.gameState);
     },
 		discardCard(cardInfo) {
       let cardManager = new CardManager(Object.assign({}, this.gameState));
       cardManager.discardAndDraw(cardInfo.playerIndex, cardInfo.cardIndex);
+      cardManager.nextPlayer();
       this.updateGameState(cardManager.gameState);
     },
 		updateGameState(gameState) {

@@ -8,7 +8,7 @@
 const fb = require('../firebaseConfig.js')
 import firebase from 'firebase'
 import { db } from '../main'
-import { GameStateConverter, createRandomGame } from '@/GameState'
+import { GameStateConverter, createBlankGame } from '@/GameState'
 
 export default {
     name: 'CreateGame',
@@ -17,7 +17,7 @@ export default {
     },
     methods: {
         createGame() {
-            let newGameState = createRandomGame(3,2);
+            let newGameState = createBlankGame();
             fb.gameCollection.withConverter(GameStateConverter)
             .add(newGameState)
             .then((docRef) => {

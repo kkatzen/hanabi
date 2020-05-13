@@ -1,27 +1,49 @@
 import CardManager from '@/CardManager'
-import { GameState, createRandomGame } from '../../../src/GameState';
+import { GameState, createBlankGame } from '../../../src/GameState';
 
 describe('Gameplay', () => {
 
-  it('intantiate random game', () => {
-    let manager = new CardManager(createRandomGame(3,4));
+  it('intantiate a new random game', () => {
+    let manager = new CardManager(createBlankGame());
+    manager.addPlayer("bob");
+    manager.dealCardsAndStartGame();
+    console.log(manager);
 
-    expect(Object.keys(manager.gameState.playerHands).length).toEqual(3);
-    expect(manager.gameState.playerHands[1].length).toEqual(4);
-    expect(manager.gameState.deck.length).toEqual(38);
+    expect(Object.keys(manager.gameState.playerHands).length).toEqual(1);
+    expect(manager.gameState.playerHands["bob"].length).toEqual(4);
+    expect(manager.gameState.deck.length).toEqual(46);
   })
 
+  it('iterates players', () => {
+    let manager = new CardManager(createBlankGame());
+    manager.addPlayer("bob");
+    manager.addPlayer("candy");
+    manager.addPlayer("dog");
+    
+    manager.dealCardsAndStartGame();
+    expect(manager.gameState.activePlayer).toEqual("bob");
+    manager.nextPlayer();
+    expect(manager.gameState.activePlayer).toEqual("candy");
+    manager.nextPlayer();
+    expect(manager.gameState.activePlayer).toEqual("dog");
+    manager.nextPlayer();
+    expect(manager.gameState.activePlayer).toEqual("bob");
+  })
+
+  
+
   it('discarding and draw a new card', () => {
-    let manager = new CardManager(createRandomGame(3,4));
+    let manager = new CardManager(createBlankGame());
+    manager.addPlayer("bob");
+    manager.dealCardsAndStartGame();
 
     let nextCardInDeck = manager.gameState.deck[manager.gameState.deck.length - 1];
     let previousDeckLength = manager.gameState.deck.length;
 
-    manager.discardAndDraw(1, 0);
+    manager.discardAndDraw("bob", 0);
 
     // I drew the new card
-    expect(manager.gameState.playerHands[1].length).toEqual(4);
-    expect(manager.gameState.playerHands[1]).toContain(nextCardInDeck);
+    expect(manager.gameState.playerHands["bob"]).toContain(nextCardInDeck);
   
     // Deck has one fewer card
     expect(manager.gameState.deck.length).toEqual(previousDeckLength - 1);
@@ -29,21 +51,26 @@ describe('Gameplay', () => {
 
   // TOOD(kk): test palye dintiali state
   it('discarding when deck is empty', () => {
-    let manager = new CardManager(createRandomGame(3,4));
+    let manager = new CardManager(createBlankGame());
+    manager.addPlayer("bob");
+    manager.dealCardsAndStartGame();
 
-    manager._forceSetPlayerHands({1:['r1a'], 2:['g2a']});
+    manager._forceSetPlayerHands({"bob":['r1a']});
     manager._forceSetProgress({});
     manager._forceSetDeck([]);
 
-    manager.discardAndDraw(2, 0);
+    manager.discardAndDraw("bob", 0);
 
-    expect(manager.gameState.playerHands).toEqual({1:['r1a'], 2: []});
+    expect(manager.gameState.playerHands).toEqual({"bob":[]});
     expect(manager.gameState.progress).toEqual({});
     expect(manager.gameState.deck).toEqual([]);
+    expect(manager.gameState.discards).toEqual(['r1a']);
   })
 
   it('intantiate with specific cardmap', () => {
-    let manager = new CardManager(createRandomGame(1,2));
+    let manager = new CardManager(createBlankGame());
+    manager.addPlayer("bob");
+    manager.dealCardsAndStartGame();
 
     manager._forceSetPlayerHands({1:['r1a'], 2:['r2a']});
     manager._forceSetProgress({});
@@ -54,7 +81,9 @@ describe('Gameplay', () => {
   })
 
   it('valid card play', () => {
-    let manager = new CardManager(createRandomGame(1,1));
+    let manager = new CardManager(createBlankGame());
+    manager.addPlayer("bob");
+    manager.dealCardsAndStartGame();
 
     manager._forceSetPlayerHands({1:['r1a'], 2:['r2a']});
     manager._forceSetProgress({'r': 1});
@@ -68,7 +97,9 @@ describe('Gameplay', () => {
   })
 
   it('invalid card play', () => {
-    let manager = new CardManager(createRandomGame(1,1));
+    let manager = new CardManager(createBlankGame());
+    manager.addPlayer("bob");
+    manager.dealCardsAndStartGame();
 
     manager._forceSetPlayerHands({1:['r5a'], 2:['r2a']});
     manager._forceSetProgress({'r': 1});
