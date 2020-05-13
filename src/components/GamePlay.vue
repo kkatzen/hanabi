@@ -17,7 +17,7 @@
               :uniqueId=cardId
               :playerIndex=playerIndex
               :cardIndex=cardIndex
-              isPlayable=true>
+              :isPlayable="playerIndex == gameState.activePlayer">
         </card>
       </div>
 
@@ -92,13 +92,11 @@ export default {
       if(!cardManager.playCard(cardInfo.playerIndex, cardInfo.cardIndex)) {
         alert("invalid!");
       }
-      cardManager.nextPlayer();
       this.updateGameState(cardManager.gameState);
     },
 		discardCard(cardInfo) {
       let cardManager = new CardManager(Object.assign({}, this.gameState));
       cardManager.discardAndDraw(cardInfo.playerIndex, cardInfo.cardIndex);
-      cardManager.nextPlayer();
       this.updateGameState(cardManager.gameState);
     },
 		updateGameState(gameState) {

@@ -4,7 +4,7 @@
         <md-card-header>
             <div class="md-title">{{number}}</div>
         </md-card-header>
-        <div v-if="isPlayable">
+        <div v-if="isPlayableNow">
           <md-card-actions>
             <md-button @click=playCard>Play</md-button>
             <md-button @click=discardCard>Discard</md-button>
@@ -44,6 +44,12 @@ export default {
     number() {
         return this.uniqueId.substring(1,2)
     },
+    isPlayableNow() {
+      let myName = window.sessionStorage.getItem("firework_friend");
+      console.log("isPlayableNow",myName);
+      console.log("isPlayableNow",this.playerIndex);
+      return this.isPlayable && this.playerIndex == myName;
+    },
 	},
   methods: {
     playCard() {
@@ -52,7 +58,7 @@ export default {
     discardCard() {
       this.$emit('discard-card', {cardIndex: this.cardIndex, playerIndex: this.playerIndex});
     }
-  }
+  },
 }
 </script>
 

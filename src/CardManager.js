@@ -6,7 +6,8 @@ class CardManager {
     }
 
     discardAndDraw(playerKey, cardIndex) {
-        return this._discardAndDraw(playerKey, cardIndex, true);
+        this._discardAndDraw(playerKey, cardIndex, true);
+        this.nextPlayer();
     }
 
     dealCardsAndStartGame() {
@@ -44,7 +45,7 @@ class CardManager {
     }
 
     nextPlayer() {
-        let players = Object.keys(this.gameState.playerHands);
+        let players = Object.keys(this.gameState.playerHands).sort();
         let currentIndex = players.findIndex((i) => {return this.gameState.activePlayer == i});
         let nextIndex = currentIndex + 1 == players.length ? 0 : currentIndex + 1;
         this.gameState.activePlayer = players[nextIndex];
@@ -71,6 +72,7 @@ class CardManager {
         if (this.gameState.progress[color] + 1 == num) {
             this.gameState.progress[color]++;
             this._discardAndDraw(playerKey, cardIndex, false);
+            this.nextPlayer();
             return true;
         }
         return false;

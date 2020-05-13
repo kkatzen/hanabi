@@ -7,9 +7,11 @@ import JoinGame from '@/components/JoinGame'
 /* Material Design Imports */
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
-import { MdCard, MdButton } from 'vue-material/dist/components'
+import { MdCard, MdButton, MdField, MdList } from 'vue-material/dist/components'
 Vue.use(MdCard);
 Vue.use(MdButton);
+Vue.use(MdField);
+Vue.use(MdList);
 
 Vue.use(Router)
 

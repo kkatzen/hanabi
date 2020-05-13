@@ -2,18 +2,42 @@
     <div>
         <div v-if="gameExists">
             <div v-if="isJoinPhase">
-                <h1>Invite your friends to join</h1>
-                <h2>http://localhost:8080/#/join/{{gameId}}</h2>
-                <p>
-                    <md-button @click="joinGame">Join game!!!</md-button>
-                </p>
-                <div v-for="(value, name) in this.gameState.playerHands" 
-                    :key=value>
-                    {{name}}
+                <h1 v-if="currentNumberPlayers >= 5">
+                    Maximum number of players in this game
+                </h1>
+                <div v-if="userJoined"> 
+                    <h1>Get ready to play, {{userName}}!</h1>
+                </div>
+                <div v-if="!userJoined && currentNumberPlayers < 5">
+                    <md-field class="user-join-field">
+                        <label>Your Name</label>
+                        <md-input v-model="userName"></md-input>
+                    </md-field>
+                    <md-button :disabled=joinButtonDisabled @click="joinGame">Join game!!!</md-button>
+                </div>
+
+                <div v-if="currentNumberPlayers == 0">
+                    <h1>Waiting for players to join...</h1>
+                </div>
+                <div v-else>
+                    <h1>Current players</h1>
+                    <md-list class="current-players-list">
+                        <md-list-item v-for="(value, name) in this.gameState.playerHands" 
+                            :key=value>
+                            {{name}}
+                        </md-list-item>
+                    </md-list>
                 </div>
                 <p>
-                    <md-button @click="startGame">Start game!!!</md-button>
+                    <h3 v-if="currentNumberPlayers < 3">
+                        At least 3 players required.
+                    </h3>
+                    <md-button @click="startGame" :disabled="this.currentNumberPlayers < 3">Start game!!!</md-button>
                 </p>
+                <div class="invite-code-box">
+                    <h1>Invite your friends to join</h1>
+                    <h2>http://localhost:8080/#/join/{{gameId}}</h2>
+                </div>
                 <p>
                     <md-button @click="deleteGame">Cancel and delete</md-button>
                 </p>
@@ -47,6 +71,8 @@ export default {
     },
     data () {
         return {
+            userName: "",
+            userJoined: false,
             gameState: {},
         }
     },
@@ -63,11 +89,11 @@ export default {
     },
     methods: {
         joinGame() {
-            const newPlayer = prompt("name?");
-            window.sessionStorage.setItem('firework_friend', newPlayer);
+            window.sessionStorage.setItem('firework_friend', this.userName);
             let cardManager = new CardManager(Object.assign({}, this.gameState));
-            cardManager.addPlayer(newPlayer);
+            cardManager.addPlayer(this.userName);
             this.updateGameState(cardManager.gameState);
+            this.userJoined = true;
         },
         deleteGame() {
             fb.gameCollection.doc(this.gameId).delete().then(function() {
@@ -102,7 +128,13 @@ export default {
         },
         isJoinPhase() {
             return this.gameState.activePlayer == null;
-        }
+        },
+        joinButtonDisabled() {
+            return !this.userName;
+        },
+        currentNumberPlayers() {
+            return Object.keys(this.gameState.playerHands).length;
+        },
     },
     components: {
         'game-play': GamePlay,
@@ -112,5 +144,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.user-join-field {
+    width: 30%;
+    margin: auto;
+}
+.invite-code-box {
+    border: 1px solid grey;
+    width: 80%;
+    margin: auto;
+}
+.current-players-list {
+    width: 40%;
+    margin: auto;
+}
 </style>
