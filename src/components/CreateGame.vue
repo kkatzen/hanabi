@@ -13,7 +13,7 @@ import { GameStateConverter, createBlankGame } from '@/GameState'
 export default {
     name: 'CreateGame',
     created: function () {
-        console.log("CreateGame");
+        console.log("CreateGame", this.storeTest);
     },
     methods: {
         createGame() {
@@ -33,6 +33,9 @@ export default {
         joinUrl() {
             return "/join/" + this.gameId;
         },
+        storeTest() {
+            return this.$store.state.krista
+        }
     }
 }
 </script>

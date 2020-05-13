@@ -30,12 +30,13 @@ export default {
 			required: true,
 			default: "r1a"
     },
-    playerIndex: {
+    playerKey: {
     },
     cardIndex: {
     },
-    isPlayable: {
-    }
+    activePlayer: {
+			type: String,
+    },
 	},
 	computed: { 
     color() {
@@ -45,18 +46,15 @@ export default {
         return this.uniqueId.substring(1,2)
     },
     isPlayableNow() {
-      let myName = window.sessionStorage.getItem("firework_friend");
-      console.log("isPlayableNow",myName);
-      console.log("isPlayableNow",this.playerIndex);
-      return this.isPlayable && this.playerIndex == myName;
+      return this.playerKey == this.activePlayer && this.playerKey == this.$store.state.myName;
     },
 	},
   methods: {
     playCard() {
-      this.$emit('play-card', {cardIndex: this.cardIndex, playerIndex: this.playerIndex});
+      this.$emit('play-card', {cardIndex: this.cardIndex, playerIndex: this.playerKey});
     },
     discardCard() {
-      this.$emit('discard-card', {cardIndex: this.cardIndex, playerIndex: this.playerIndex});
+      this.$emit('discard-card', {cardIndex: this.cardIndex, playerIndex: this.playerKey});
     }
   },
 }

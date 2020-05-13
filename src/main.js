@@ -10,6 +10,24 @@ import firebase from 'firebase'
 Vue.use(firestorePlugin)
 Vue.config.productionTip = false
 
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
+  state: {
+    myName: ""
+  },
+  firestore() {
+      
+  },
+  mutations: {
+    increment (state) {
+      state.count++
+    }
+  }
+})
+
 // handle page reloads
 let app
 fb.auth.onAuthStateChanged(user => {
@@ -18,15 +36,8 @@ fb.auth.onAuthStateChanged(user => {
         app = new Vue({
             el: '#app',
             router,
+            store,
             render: h => h(App)
         })
     }
-})
-
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  components: { App },
-  template: '<App/>'
 })

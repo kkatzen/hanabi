@@ -3,23 +3,12 @@
      <md-button @click="deleteGame">Delete this game from firestore!!!</md-button>
       <played-cards :cards=gameState.progress />
 
-      <div class="my-cards"
-          v-for="(hand, playerIndex) in gameState.playerHands"
-          :key=playerIndex>
-        <h1>
-          Player {{playerIndex}}
-          <span v-if="playerIndex == gameState.activePlayer"> - Active</span>
-        </h1>
-        <card v-for="(cardId, cardIndex) in hand"
-              v-on:play-card="playCard"
-              v-on:discard-card="discardCard"
-              :key=cardId
-              :uniqueId=cardId
-              :playerIndex=playerIndex
-              :cardIndex=cardIndex
-              :isPlayable="playerIndex == gameState.activePlayer">
-        </card>
-      </div>
+      <hand v-for="(hand, playerKey) in gameState.playerHands"
+          v-on:play-card="playCard"
+          v-on:discard-card="discardCard"
+          :key=playerKey :activePlayer="gameState.activePlayer"
+          :playerKey=playerKey
+          :cards=hand />
 
       <div class="discard">
         <h1>Discard</h1>
@@ -43,6 +32,7 @@
 <script>
 const fb = require('../firebaseConfig.js')
 import Card from '@/components/Card'
+import Hand from '@/components/Hand'
 import PlayedCards from '@/components/PlayedCards'
 import CardManager from '@/CardManager'
 import {GameState, GameStateConverter, createRandomGame} from '@/GameState'
@@ -113,7 +103,8 @@ export default {
   },
   components: {
     'card': Card,
-    'played-cards': PlayedCards
+    'played-cards': PlayedCards,
+    'hand': Hand,
   },
 }
 </script>

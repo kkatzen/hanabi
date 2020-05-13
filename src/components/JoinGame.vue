@@ -89,7 +89,7 @@ export default {
     },
     methods: {
         joinGame() {
-            window.sessionStorage.setItem('firework_friend', this.userName);
+            this.$store.state.myName = this.userName
             let cardManager = new CardManager(Object.assign({}, this.gameState));
             cardManager.addPlayer(this.userName);
             this.updateGameState(cardManager.gameState);
