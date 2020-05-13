@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import GamePlay from '@/components/GamePlay'
 import CreateGame from '@/components/CreateGame'
+import JoinGame from '@/components/JoinGame'
 
 /* Material Design Imports */
 import 'vue-material/dist/vue-material.min.css'
@@ -18,6 +19,12 @@ export default new Router({
       path: '/',
       name: 'CreateGame',
       component: CreateGame,
+    },
+    {
+      path: '/join/:gameId',
+      name: 'JoinGame',
+      component: JoinGame,
+      props: true
     },
     {
       path: '/game/:gameId',

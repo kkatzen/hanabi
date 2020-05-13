@@ -1,25 +1,20 @@
 <template>
     <div>
-        <div v-if="!gameCreated">
         <md-button @click="createGame">Create a new game!!!</md-button>
-        </div>
-            <div v-else>
-        <md-button @click="deleteGame">Delete this game from firestore!!!</md-button>
-        </div>
-        <router-link :to="gameUrl">{{gameId}}</router-link>
+        <router-link :to="joinUrl">{{gameId}}</router-link>
     </div>
 </template>
 
 <script>
 const fb = require('../firebaseConfig.js')
-import {GameState, GameStateConverter, createRandomGame} from '@/GameState'
 import firebase from 'firebase'
 import { db } from '../main'
+import { GameStateConverter, createRandomGame } from '@/GameState'
 
 export default {
     name: 'CreateGame',
     created: function () {
-        console.log('hi')
+        console.log("CreateGame");
     },
     data () {
         return {
@@ -38,27 +33,13 @@ export default {
             .catch((error) => {
                 console.error("Error adding document: ", error);
             });
-        },
-        deleteGame() {
-        fb.gameCollection.doc(this.gameId).delete().then(function() {
-            console.log("Document successfully deleted!");
-        }).catch(function(error) {
-            console.error("Error removing document: ", error);
-        });
-        // why do i have to do this manually?
-        this.gameId = "";
-        },
-    },
-    computed: { 
-        gameCreated() {
-            return this.gameId != "";
-        },
-        gameUrl() {
-            if(this.gameId)
-                return "/game/" + this.gameId;
-            return "";
         }
     },
+    computed: {
+        joinUrl() {
+            return "/join/" + this.gameId;
+        },
+    }
 }
 </script>
 
