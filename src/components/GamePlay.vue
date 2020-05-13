@@ -1,13 +1,6 @@
 <template>
   <div class="hello">
-    <div v-if="!gameInProgress">
-      <md-button @click="createGame">Create a new game!!!</md-button>
-    </div>
-		<div v-else>
-      <md-button @click="deleteGame">Delete this game from firestore!!!</md-button>
-    </div>
-
-    <div v-if="gameInProgress">
+     <md-button @click="deleteGame">Delete this game from firestore!!!</md-button>
       <played-cards :cards=gameState.progress />
 
       <div class="my-cards"
@@ -25,13 +18,23 @@
         </card>
       </div>
 
-      <h1>Deck</h1>
-      <card v-for="cardId in gameState.deck"
-            :key=cardId
-            :uniqueId=cardId>
-      </card>
+      <div class="discard">
+        <h1>Discard</h1>
+        <card v-for="cardId in gameState.discards"
+              :key=cardId
+              :uniqueId=cardId>
+        </card>
+      </div>
+
+      <div class="deck">
+        <h1>Deck</h1>
+        <card v-for="cardId in gameState.deck"
+              :key=cardId
+              :uniqueId=cardId>
+        </card>
+      </div>
+
     </div>
-  </div>
 </template>
 
 <script>
@@ -46,12 +49,12 @@ import { db } from '../main'
 export default {
   name: 'GamePlay',
   created: function () {
-    console.log('hi')
+    console.log('GamePlay')
   },
+  props: ['gameId'],
   data () {
     return {
       gameState: {},
-      gameId: ""
     }
   },
   firestore () {
@@ -67,24 +70,14 @@ export default {
     },
   },
   methods: {
-    createGame() {
-        let newGameState = createRandomGame(3,2);
-        fb.gameCollection.withConverter(GameStateConverter)
-        .add(newGameState)
-        .then((docRef) => {
-            console.log("Document written with ID: ", docRef.id);
-            this.gameId = docRef.id;
-        })
-        .catch((error) => {
-            console.error("Error adding document: ", error);
-        });
-    },
     deleteGame() {
+      console.log("deleteGame");
       fb.gameCollection.doc(this.gameId).delete().then(function() {
           console.log("Document successfully deleted!");
       }).catch(function(error) {
           console.error("Error removing document: ", error);
       });
+      this.$router.push("/");
       // why do i have to do this manually?
       this.gameState = {};
       this.gameId = "";
@@ -119,11 +112,6 @@ export default {
     'card': Card,
     'played-cards': PlayedCards
   },
-  computed: { 
-    gameInProgress() {
-        return this.gameId != "";
-    },
-	},
 }
 </script>
 
@@ -148,5 +136,13 @@ a {
   height: 200px;
   margin: auto;
   width: 884px; /* 220 * 4 for cards + 2*2 for border */
+}
+.deck {
+  width: 50%;
+}
+
+.discard {
+  width: 50%;
+  float: right;
 }
 </style>
