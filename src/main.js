@@ -18,9 +18,6 @@ const store = new Vuex.Store({
   state: {
     myName: ""
   },
-  firestore() {
-      
-  },
   mutations: {
     increment (state) {
       state.count++

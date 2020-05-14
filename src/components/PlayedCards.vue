@@ -1,10 +1,11 @@
 <template>
     <div class="my-cards">
         <h1>Played cards</h1>
-        <card v-for="cardId of cardIds" 
-            :key=cardId
-            :uniqueId=cardId>
-        </card>
+        <ol class="card-list">
+            <li v-for="cardId of cardIds" :key=cardId>
+                <card :uniqueId=cardId />
+            </li>
+        </ol>
     </div>
 </template>
 
@@ -45,5 +46,11 @@ export default {
   height: 200px;
   margin: auto;
   width: 1004px;
+}
+.card-list {
+	list-style: none;
+}
+.card-list li {
+    float: left;
 }
 </style>

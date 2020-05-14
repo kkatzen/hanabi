@@ -1,5 +1,7 @@
 import { GameState } from "./GameState";
 
+const MAX_HINTS = 8;
+
 class CardManager {
     constructor(gameState) {
         this.gameState = gameState;
@@ -7,7 +9,20 @@ class CardManager {
 
     discardAndDraw(playerKey, cardIndex) {
         this._discardAndDraw(playerKey, cardIndex, true);
+        this.gameState.hints--;
         this.nextPlayer();
+    }
+
+    giveHint() {
+        console.log("this.gameState", this.gameState.hints);
+        console.log("MAX_HINTS", MAX_HINTS);
+        if (this.gameState.hints < MAX_HINTS) {
+            this.gameState.hints++;
+            this.nextPlayer();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     dealCardsAndStartGame() {

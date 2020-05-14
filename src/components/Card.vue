@@ -1,8 +1,8 @@
 <template>
   <div class="card">
-    <md-card :style="{backgroundColor: color}">
+    <md-card :style="{backgroundColor: displayColor}">
         <md-card-header>
-            <div class="md-title">{{number}}</div>
+            <div class="md-title">{{displayNumber}}</div>
         </md-card-header>
         <div v-if="isPlayableNow">
           <md-card-actions>
@@ -45,9 +45,18 @@ export default {
     number() {
         return this.uniqueId.substring(1,2)
     },
+    myHand() {
+      return this.playerKey == this.$store.state.myName;
+    },
     isPlayableNow() {
       return this.playerKey == this.activePlayer && this.playerKey == this.$store.state.myName;
     },
+    displayColor() {
+      return this.myHand ? "grey" : this.color;
+    },
+    displayNumber () {
+      return this.myHand ? "???" : this.number;
+    }
 	},
   methods: {
     playCard() {
@@ -64,7 +73,6 @@ export default {
 <style scoped>
 .card {
   width: 170px;
-  float: left;
   margin: 10px;
 }
 </style>

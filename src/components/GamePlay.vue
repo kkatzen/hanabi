@@ -2,10 +2,12 @@
   <div class="hello">
      <md-button @click="deleteGame">Delete this game from firestore!!!</md-button>
       <played-cards :cards=gameState.progress />
+      <h1>{{hintText}}</h1>
 
       <hand v-for="(hand, playerKey) in gameState.playerHands"
           v-on:play-card="playCard"
           v-on:discard-card="discardCard"
+          v-on:give-hint="giveHint"
           :key=playerKey :activePlayer="gameState.activePlayer"
           :playerKey=playerKey
           :cards=hand />
@@ -25,7 +27,6 @@
               :uniqueId=cardId>
         </card>
       </div>
-
     </div>
 </template>
 
@@ -56,6 +57,12 @@ export default {
       gameState: fb.gameCollection.doc(this.gameId)
     }
   },
+  computed: { 
+    hintText() {
+      console.log("this.gameState.hints", this.gameState.hints);
+      return this.gameState.hints + " used of " + 8 + " hints.";
+    },
+  },
   watch: {
     gameId(gameId) {
       // $bind automatically unbinds the previously bound property
@@ -75,14 +82,25 @@ export default {
       this.gameState = {};
       this.gameId = "";
     },
+    giveHint() {
+      console.log("playCard");
+      let cardManager = new CardManager(Object.assign({}, this.gameState));
+      console.log("cardManager", cardManager);
+      if(!cardManager.giveHint()) {
+        alert("invalid!");
+      } else {
+        this.updateGameState(cardManager.gameState);
+      }
+    },
 		playCard(cardInfo) {
       console.log("playCard");
       let cardManager = new CardManager(Object.assign({}, this.gameState));
       console.log("cardManager", cardManager);
       if(!cardManager.playCard(cardInfo.playerIndex, cardInfo.cardIndex)) {
         alert("invalid!");
+      } else {
+        this.updateGameState(cardManager.gameState);
       }
-      this.updateGameState(cardManager.gameState);
     },
 		discardCard(cardInfo) {
       let cardManager = new CardManager(Object.assign({}, this.gameState));
@@ -134,7 +152,6 @@ a {
 .deck {
   width: 50%;
 }
-
 .discard {
   width: 50%;
   float: right;

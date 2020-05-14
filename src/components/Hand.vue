@@ -2,19 +2,24 @@
 <!--v-for="(hand, playerIndex) in gameState.playerHands"
           :key=playerIndex
 -->
-  <div class="my-cards">
-    <h1>
-        {{handHeader}}
-    </h1>
-    <card v-for="(cardId, cardIndex) in cards"
-            v-on:play-card="playCard"
-            v-on:discard-card="discardCard"
-            :key=cardId
-            :uniqueId=cardId
-            :playerKey=playerKey
-            :cardIndex=cardIndex
-            :activePlayer=activePlayer>
-    </card>
+    <div class="hand">
+        <h1>
+            {{handHeader}}
+        </h1>
+        <div v-if="myHand && myTurn">
+            <md-button @click=giveHint>Give Hint</md-button>
+        </div>
+        <ol class="card-list">
+            <li v-for="(cardId, cardIndex) in cards" :key=cardId>
+                <card v-on:play-card="playCard"
+                        v-on:discard-card="discardCard"
+                        :uniqueId=cardId
+                        :playerKey=playerKey
+                        :cardIndex=cardIndex
+                        :activePlayer=activePlayer>
+                </card>
+            </li>
+        </ol>
     </div>
 </template>
 
@@ -41,6 +46,10 @@ export default {
         myHand() {
             return  this.playerKey == this.$store.state.myName;
         },
+        myTurn() {
+            console.log("myTurn", this.activePlayer)
+            return  this.activePlayer == this.$store.state.myName;
+        },
         handHeader() {
             let handOwner = this.myHand ? "ME, " + this.playerKey + "!!!" : this.playerKey;
             let activeTag = this.playerKey == this.activePlayer ? "ACITVE PLAYER: " : "";
@@ -56,6 +65,9 @@ export default {
         },
         discardCard(cardInfo) {
             this.$emit('discard-card', cardInfo);
+        },
+        giveHint() {
+            this.$emit('give-hint');
         }
     },
 }
@@ -63,9 +75,16 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.card {
-  width: 170px;
-  float: left;
-  margin: 10px;
+.hand {
+    border: 1px solid grey;
+    height: 200px;
+    margin: auto;
+	display: table;   /* Allow the centering to work */
+}
+.card-list {
+	list-style: none;
+}
+.card-list li {
+    float: left;
 }
 </style>

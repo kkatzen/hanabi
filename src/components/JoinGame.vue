@@ -32,11 +32,11 @@
                     <h3 v-if="currentNumberPlayers < 3">
                         At least 3 players required.
                     </h3>
-                    <md-button @click="startGame" :disabled="this.currentNumberPlayers < 3">Start game!!!</md-button>
+                    <md-button @click="startGame" :disabled="disableStartGame">Start game!!!</md-button>
                 </p>
                 <div class="invite-code-box">
                     <h1>Invite your friends to join</h1>
-                    <h2>http://localhost:8080/#/join/{{gameId}}</h2>
+                    <h2>http://fireworkswithfriends.firebaseapp.com/#/join/{{gameId}}</h2>
                 </div>
                 <p>
                     <md-button @click="deleteGame">Cancel and delete</md-button>
@@ -120,6 +120,9 @@ export default {
         },
     },
     computed: { 
+        disableStartGame() {
+            return this.currentNumberPlayers < 3
+        },
         gameExists() {
             return this.gameState != undefined && this.gameState != null && this.gameState != {} && this.gameId != "" && this.gameId != undefined && this.gameId != null;
         },
