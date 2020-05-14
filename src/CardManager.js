@@ -9,17 +9,15 @@ class CardManager {
 
     discardAndDraw(playerKey, cardIndex) {
         this._discardAndDraw(playerKey, cardIndex, true);
-        if (this.gameState.hints > 0){
-            this.gameState.hints--;
+        if (this.gameState.remainingHints < MAX_HINTS){
+            this.gameState.remainingHints++;
         }
         this.nextPlayer();
     }
 
     giveHint() {
-        console.log("this.gameState", this.gameState.hints);
-        console.log("MAX_HINTS", MAX_HINTS);
-        if (this.gameState.hints < MAX_HINTS) {
-            this.gameState.hints++;
+        if (this.gameState.remainingHints > 0) {
+            this.gameState.remainingHints--;
             this.nextPlayer();
             return true;
         } else {

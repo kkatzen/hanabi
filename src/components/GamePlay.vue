@@ -55,8 +55,7 @@ export default {
   },
   computed: { 
     hintText() {
-      console.log("this.gameState.hints", this.gameState.hints);
-      return this.gameState.hints + " used of " + 8 + " hints.";
+      return this.gameState.remainingHints + " hints remain";
     },
   },
   watch: {

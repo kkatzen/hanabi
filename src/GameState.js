@@ -7,11 +7,15 @@ class GameState {
         this.deck = deck; // []
         this.progress = progress; // {'r':0, 'y':0, 'b':0, 'g':0, 'p':0}
         this.discards = discards; // []
-        this.hints = 0;
+        this.remainingHints = 8;
     }
 }
 const createBlankGame = function() {
-    return new GameState({}, [], {'r':0, 'y':0, 'b':0, 'g':0, 'p':0}, [], 0);
+    return new GameState(
+        {}, //playerHands
+        [], //deck
+        {'r':0, 'y':0, 'b':0, 'g':0, 'p':0}, //progress
+        []); //discards
 }
 const GameStateConverter = {
     toFirestore: function(gameState) {
@@ -21,7 +25,7 @@ const GameStateConverter = {
             deck: gameState.deck,
             progress: gameState.progress,
             discards: gameState.discards,
-            hints: gameState.hints,
+            remainingHints: gameState.remainingHints,
         };
     },
     fromFirestore: function(snapshot, options){
@@ -32,7 +36,7 @@ const GameStateConverter = {
             data.deck,
             data.progress,
             data.discards,
-            data.hints);
+            data.remainingHints);
     }
 };
 
