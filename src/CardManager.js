@@ -9,7 +9,9 @@ class CardManager {
 
     discardAndDraw(playerKey, cardIndex) {
         this._discardAndDraw(playerKey, cardIndex, true);
-        this.gameState.hints--;
+        if (this.gameState.hints > 0){
+            this.gameState.hints--;
+        }
         this.nextPlayer();
     }
 

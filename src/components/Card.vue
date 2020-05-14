@@ -1,12 +1,16 @@
 <template>
   <div class="card">
     <md-card :style="{backgroundColor: displayColor}">
-        <md-card-header>
-            <div class="md-title">{{displayNumber}}</div>
-        </md-card-header>
+        <md-card-area>
+          <md-card-header>
+              <div class="md-title">{{displayNumber}}</div>
+          </md-card-header>
+        </md-card-area>
         <div v-if="isPlayableNow">
-          <md-card-actions>
+          <md-card-actions md-alignment="middle">
             <md-button @click=playCard>Play</md-button>
+         </md-card-actions>
+          <md-card-actions >
             <md-button @click=discardCard>Discard</md-button>
          </md-card-actions>
         </div>
@@ -72,7 +76,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .card {
-  width: 170px;
+  width: 130px;
   margin: 10px;
 }
 </style>

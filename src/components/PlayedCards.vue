@@ -1,6 +1,6 @@
 <template>
-    <div class="my-cards">
-        <h1>Played cards</h1>
+    <div class="played-cards-wrapper">
+        <h2>Played cards</h2>
         <ol class="card-list">
             <li v-for="cardId of cardIds" :key=cardId>
                 <card :uniqueId=cardId />
@@ -31,7 +31,8 @@ export default {
       cardIds() {
           let cardIds = [];
           for (let key in this.cards) {
-              cardIds.push(key + this.cards[key]);
+              // construct card ID so card component can render properly
+              cardIds.push(key + this.cards[key] + "-p");
           }
           return cardIds;
         }
@@ -41,16 +42,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.my-cards {
-  border: 2px solid grey;
-  height: 200px;
-  margin: auto;
-  width: 1004px;
+.played-cards-wrapper {
+    border: 2px solid grey;
+    margin: auto;
+    padding: 10px;
+    text-align: center;
 }
 .card-list {
 	list-style: none;
-}
-.card-list li {
-    float: left;
+    padding: 0;
 }
 </style>

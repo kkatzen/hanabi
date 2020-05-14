@@ -1,8 +1,11 @@
 <template>
-  <div class="hello">
-     <md-button @click="deleteGame">Delete this game from firestore!!!</md-button>
-      <played-cards :cards=gameState.progress />
-      <h1>{{hintText}}</h1>
+  <div>
+      <div class="left-sidebar">
+        <h2>{{hintText}}</h2>
+        <deck :remainingCards=gameState.deck.length />
+        <played-cards :cards=gameState.progress />
+        <md-button @click="deleteGame">Delete Game</md-button>
+      </div>
 
       <hand v-for="(hand, playerKey) in gameState.playerHands"
           v-on:play-card="playCard"
@@ -12,17 +15,9 @@
           :playerKey=playerKey
           :cards=hand />
 
-      <div class="discard">
-        <h1>Discard</h1>
+      <div class="discard" v-if="gameState.discards > 0">
+        <h2>Discarded Cards:</h2>
         <card v-for="cardId in gameState.discards"
-              :key=cardId
-              :uniqueId=cardId>
-        </card>
-      </div>
-
-      <div class="deck">
-        <h1>Deck</h1>
-        <card v-for="cardId in gameState.deck"
               :key=cardId
               :uniqueId=cardId>
         </card>
@@ -36,6 +31,7 @@ import Card from '@/components/Card'
 import Hand from '@/components/Hand'
 import PlayedCards from '@/components/PlayedCards'
 import CardManager from '@/CardManager'
+import Deck from '@/components/Deck'
 import {GameState, GameStateConverter, createRandomGame} from '@/GameState'
 import firebase from 'firebase'
 import { db } from '../main'
@@ -123,6 +119,7 @@ export default {
     'card': Card,
     'played-cards': PlayedCards,
     'hand': Hand,
+    'deck': Deck,
   },
 }
 </script>
@@ -147,13 +144,11 @@ a {
   border: 2px solid grey;
   height: 200px;
   margin: auto;
-  width: 884px; /* 220 * 4 for cards + 2*2 for border */
 }
-.deck {
-  width: 50%;
-}
-.discard {
-  width: 50%;
-  float: right;
+.left-sidebar {
+  float: left;
+  background-color: #D8E8F0;
+  padding: 10px;
+  margin: 20px;
 }
 </style>

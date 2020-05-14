@@ -44,7 +44,6 @@
                 <!--<router-link :to="gameUrl">{{gameId}}</router-link>-->
             </div>
             <div v-else>
-                Game!
                 <game-play :gameId=gameId />
             </div>
         </div>

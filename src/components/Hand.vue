@@ -2,10 +2,10 @@
 <!--v-for="(hand, playerIndex) in gameState.playerHands"
           :key=playerIndex
 -->
-    <div class="hand">
-        <h1>
+    <div class="hand" :style="{backgroundColor: backgroundColor}">
+        <h2>
             {{handHeader}}
-        </h1>
+        </h2>
         <div v-if="myHand && myTurn">
             <md-button @click=giveHint>Give Hint</md-button>
         </div>
@@ -51,10 +51,13 @@ export default {
             return  this.activePlayer == this.$store.state.myName;
         },
         handHeader() {
-            let handOwner = this.myHand ? "ME, " + this.playerKey + "!!!" : this.playerKey;
-            let activeTag = this.playerKey == this.activePlayer ? "ACITVE PLAYER: " : "";
-            return activeTag + handOwner;
+       //     let handOwner = this.myHand ? "ME, " + this.playerKey + "!!!" : this.playerKey;
+         //   let activeTag = this.playerKey == this.activePlayer ? "Turn: " : "";
+            return this.playerKey;
         },
+        backgroundColor() {
+            return this.playerKey == this.activePlayer ? "#C4FFBA" : "#FFFFFF";
+        }
     },
     components: {
         'card': Card,
@@ -80,9 +83,11 @@ export default {
     height: 200px;
     margin: auto;
 	display: table;   /* Allow the centering to work */
+    margin: 20px;
 }
 .card-list {
 	list-style: none;
+    padding: 0;
 }
 .card-list li {
     float: left;
