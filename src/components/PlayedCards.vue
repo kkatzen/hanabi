@@ -14,25 +14,15 @@ import Card from '@/components/Card'
 
 export default {
     name: 'PlayedCards',
-    props: {
-        cards: {
-            type: Object,
-			required: true,
-            default: () => {return {'r':4, 'y':0, 'b':0, 'g':0, 'p':0}},
-            validator: function (value) {
-                return true;
-            }
-        }
-    },
     components: {
         'card': Card
     },
     computed: { 
       cardIds() {
           let cardIds = [];
-          for (let key in this.cards) {
+          for (let key in this.$store.state.myGame.progress) {
               // construct card ID so card component can render properly
-              cardIds.push(key + this.cards[key] + "-p");
+              cardIds.push(key + this.$store.state.myGame.progress[key] + "-p");
           }
           return cardIds;
         }

@@ -4,7 +4,19 @@ const MAX_HINTS = 8;
 
 class CardManager {
     constructor(gameState) {
-        this.gameState = gameState;
+        // Make a deep copy of the objects so nothing gets weirdly out of sync.
+        let copyPlayerHanders = {};
+        for (let key of Object.keys(gameState.playerHands)) {
+            copyPlayerHanders[key] = Array.from(gameState.playerHands[key]);
+        }
+        this.gameState = new GameState(
+            gameState.activePlayer, // activePlayer
+            copyPlayerHanders, //playerHands
+            Array.from(gameState.deck), //deck
+            Object.assign({}, gameState.progress), //progress
+            Array.from(gameState.discards), //discards
+            gameState.remainingHints // remainingHints
+            );
     }
 
     discardAndDraw(playerKey, cardIndex) {
@@ -72,7 +84,6 @@ class CardManager {
 
     _discardAndDraw(playerKey, cardIndex, actualDiscard) {
         let discarded = this.gameState.playerHands[playerKey].splice(cardIndex, 1);
-        console.log(discarded);
         if (actualDiscard) {
             this.gameState.discards.push(discarded[0]);
         }

@@ -7,7 +7,7 @@
           </md-card-header>
         </md-card-area>
         <div v-if="isPlayableNow">
-          <md-card-actions md-alignment="middle">
+          <md-card-actions>
             <md-button @click=playCard>Play</md-button>
          </md-card-actions>
           <md-card-actions >
@@ -19,6 +19,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import CardManager from '@/CardManager'
+
 const colorMap = {
   'r':'#ebabab',
   'b':'#bdddfc',
@@ -64,10 +67,25 @@ export default {
 	},
   methods: {
     playCard() {
-      this.$emit('play-card', {cardIndex: this.cardIndex, playerIndex: this.playerKey});
+      let cardManager = new CardManager(this.$store.state.myGame);
+      if(!cardManager.playCard(this.playerKey, this.cardIndex)) {
+        alert("invalid!");
+      } else {
+        let gameUpdate = {
+            gameId: this.$store.state.myGameId,
+            gameState: cardManager.gameState
+        };
+        this.$store.dispatch("updateGame", gameUpdate);
+      }
     },
     discardCard() {
-      this.$emit('discard-card', {cardIndex: this.cardIndex, playerIndex: this.playerKey});
+      let cardManager = new CardManager(this.$store.state.myGame);
+      cardManager.discardAndDraw(this.playerKey, this.cardIndex);
+        let gameUpdate = {
+            gameId: this.$store.state.myGameId,
+            gameState: cardManager.gameState
+        };
+        this.$store.dispatch("updateGame", gameUpdate);
     }
   },
 }

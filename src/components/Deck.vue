@@ -12,13 +12,11 @@
 <script>
 export default {
   name: 'Deck',
-	props: {
-		remainingCards: {
-			type: Number,
-			required: true,
-			default: 0
-        },
-	},
+  computed: {
+    remainingCards() {
+      return this.$store.state.myGame.deck.length;
+    },
+  }
 }
 </script>
 

@@ -44,7 +44,7 @@
                 <!--<router-link :to="gameUrl">{{gameId}}</router-link>-->
             </div>
             <div v-else>
-                <game-play :gameId=gameId />
+                <game-play />
             </div>
         </div>
         <div v-else>
@@ -71,7 +71,6 @@ export default {
     data () {
         return {
             userName: "",
-            userJoined: false,
             gameState: {},
         }
     },
@@ -88,11 +87,15 @@ export default {
     },
     methods: {
         joinGame() {
-            this.$store.state.myName = this.userName
+            // Set up store
+            this.$store.state.myName = this.userName;
+            this.$store.state.myGameId = this.gameId;
+            this.$store.dispatch("bindMyGame", this.gameId);
+
+            // Update database
             let cardManager = new CardManager(Object.assign({}, this.gameState));
             cardManager.addPlayer(this.userName);
             this.updateGameState(cardManager.gameState);
-            this.userJoined = true;
         },
         deleteGame() {
             fb.gameCollection.doc(this.gameId).delete().then(function() {
@@ -107,18 +110,17 @@ export default {
             this.updateGameState(cardManager.gameState);
         },
         updateGameState(gameState) {
-            console.log("updateGameState");
-            fb.gameCollection.withConverter(GameStateConverter).doc(this.gameId)
-            .set(gameState)
-            .then((docRef) => {
-                console.log("Success!");
-            })
-            .catch((error) => {
-                console.error("Error adding document: ", error);
-            });
+            let gameUpdate = {
+                gameId: this.gameId,
+                gameState: gameState
+            };
+            this.$store.dispatch("updateGame", gameUpdate);
         },
     },
     computed: { 
+        userJoined() {
+            return this.$store.state.myName != null;
+        },
         disableStartGame() {
             return this.currentNumberPlayers < 3
         },

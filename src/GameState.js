@@ -1,25 +1,28 @@
 import firebase from 'firebase'
 
 class GameState {
-    constructor(playerHands, deck, progress, discards) {
-        this.activePlayer = null;
+    constructor(activePlayer, playerHands, deck, progress, discards, remainingHints) {
+        this.activePlayer = activePlayer;
         this.playerHands = playerHands; // {}
         this.deck = deck; // []
         this.progress = progress; // {'r':0, 'y':0, 'b':0, 'g':0, 'p':0}
         this.discards = discards; // []
-        this.remainingHints = 8;
+        this.remainingHints = remainingHints;
     }
 }
 const createBlankGame = function() {
     return new GameState(
+        null, // activePlayer
         {}, //playerHands
         [], //deck
         {'r':0, 'y':0, 'b':0, 'g':0, 'p':0}, //progress
-        []); //discards
+        [], //discards
+        8 // remainingHints
+        );
 }
 const GameStateConverter = {
     toFirestore: function(gameState) {
-        return {
+        let newGameState = {
             activePlayer: gameState.activePlayer,
             playerHands: gameState.playerHands,
             deck: gameState.deck,
@@ -27,16 +30,20 @@ const GameStateConverter = {
             discards: gameState.discards,
             remainingHints: gameState.remainingHints,
         };
+        console.log("toFirestore newGameState", newGameState)
+        return newGameState;
     },
     fromFirestore: function(snapshot, options){
         const data = snapshot.data(options);
-        return new GameState(
+        let newGameState = new GameState(
             data.activePlayer,
             data.playerHands,
             data.deck,
             data.progress,
             data.discards,
             data.remainingHints);
+        console.log("fromFirestore newGameState", newGameState)
+        return newGameState;
     }
 };
 
