@@ -63,6 +63,9 @@ import GamePlay from '@/components/GamePlay'
 
 export default {
     name: 'JoinGame',
+    created() {
+        this.$store.state.myName = undefined;
+    },
     props: {
         gameId: {
             type: String,

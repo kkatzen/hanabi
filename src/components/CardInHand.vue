@@ -1,0 +1,156 @@
+<template>
+  <div class="card">
+    <md-card :style="{backgroundColor: displayColor}">
+        <md-card-area>
+          <md-card-header>
+              <div class="md-title">{{displayNumber}}</div>
+          </md-card-header>
+          <div v-if="!myHand">
+            <md-card-header :style="{backgroundColor: guessedColor}">
+              {{guessedNumber}}
+            </md-card-header>
+          </div>
+        </md-card-area>
+        <div v-if="myHand">
+          <md-card-actions>
+            <md-button @click=guessColor>Guess Color</md-button>
+         </md-card-actions>
+          <md-card-actions>
+            <md-button @click=guessNumber>Guess Number</md-button>
+         </md-card-actions>
+        </div>
+        <div v-if="isPlayableNow">
+          <md-card-actions>
+            <md-button @click=playCard>Play</md-button>
+         </md-card-actions>
+          <md-card-actions >
+            <md-button @click=discardCard>Discard</md-button>
+         </md-card-actions>
+        </div>
+    </md-card>
+  </div>
+</template>
+
+<script>
+import { mapState } from "vuex";
+import CardManager from '@/CardManager'
+
+const colorMap = {
+  'r':'#ebabab',
+  'b':'#bdddfc',
+  'g':'#abebb6',
+  'y':'#f5f38c',
+  'p': '#d4bdf0'
+};
+export default {
+  name: 'CardInHand',
+	props: {
+		uniqueId: {
+    },
+    playerKey: {
+    },
+    cardIndex: {
+    },
+    activePlayer: {
+			type: String,
+    },
+	},
+	computed: { 
+    color() {
+        return colorMap[this.cardId.substring(0,1)]
+    },
+    number() {
+        return this.cardId.substring(1,2)
+    },
+    myHand() {
+      return this.playerKey == this.$store.state.myName;
+    },
+    isPlayableNow() {
+      return this.playerKey == this.activePlayer && this.playerKey == this.$store.state.myName;
+    },
+    displayColor() {
+      if (!this.myHand) {
+        return this.color;
+      }
+      return this.cardInfo.color_guess ? "#" + this.cardInfo.color_guess : "grey";
+    },
+    displayNumber () {
+      if (!this.myHand) {
+        return this.number;
+      }
+      return this.cardInfo.number_guess ? this.cardInfo.number_guess  + "?" : "???";
+    },
+    guessedColor() {
+      console.log("this.cardInfo.color_guess", this.cardInfo.color_guess);
+      return this.cardInfo.color_guess ? "#" + this.cardInfo.color_guess : "grey";
+    },
+    guessedNumber() {
+      return this.cardInfo.number_guess ? this.cardInfo.number_guess : "???";
+    },
+    cardId () {
+      return this.uniqueId != undefined ? this.uniqueId : this.cardInfo.id;
+    },
+    cardInfo() {
+      console.log(this.$store.state.myGame.playerHands[this.playerKey][this.cardIndex]);
+      return this.$store.state.myGame.playerHands[this.playerKey][this.cardIndex];
+    }
+	},
+  methods: {
+    playCard() {
+      let cardManager = new CardManager(this.$store.state.myGame);
+      if(!cardManager.playCard(this.playerKey, this.cardIndex)) {
+        alert("invalid!");
+      } else {
+        let gameUpdate = {
+            gameId: this.$store.state.myGameId,
+            gameState: cardManager.gameState
+        };
+        this.$store.dispatch("updateGame", gameUpdate);
+      }
+    },
+    discardCard() {
+      let cardManager = new CardManager(this.$store.state.myGame);
+      cardManager.discardAndDraw(this.playerKey, this.cardIndex);
+        let gameUpdate = {
+            gameId: this.$store.state.myGameId,
+            gameState: cardManager.gameState
+        };
+        this.$store.dispatch("updateGame", gameUpdate);
+    },
+    guessColor() {
+      let color = prompt("Color? Hexcode string plz");
+      if (color == undefined || color == "") {
+        return;
+      }
+      let cardManager = new CardManager(this.$store.state.myGame);
+      cardManager.guessColor(this.playerKey, this.cardIndex, color);
+        let gameUpdate = {
+            gameId: this.$store.state.myGameId,
+            gameState: cardManager.gameState
+        };
+        this.$store.dispatch("updateGame", gameUpdate);
+    },
+    guessNumber() {
+      let number = prompt("number? just a sringn.");
+      if (number == undefined || number == "") {
+        return;
+      }
+      let cardManager = new CardManager(this.$store.state.myGame);
+      cardManager.guessNumber(this.playerKey, this.cardIndex, number);
+        let gameUpdate = {
+            gameId: this.$store.state.myGameId,
+            gameState: cardManager.gameState
+        };
+        this.$store.dispatch("updateGame", gameUpdate);
+    }
+  },
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+.card {
+  width: 130px;
+  margin: 10px;
+}
+</style>

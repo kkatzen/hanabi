@@ -63,7 +63,10 @@ class CardManager {
         for (let playerName in this.gameState.playerHands) { 
             let hand = [];
             while (hand.length < /*startingHandSize=*/4) {
-                hand.push(shuffledDeck.pop());
+                let cardInfo = {
+                    id: shuffledDeck.pop()
+                };
+                hand.push(cardInfo);
             }
             this.gameState.playerHands[playerName] = hand;
         }
@@ -82,19 +85,30 @@ class CardManager {
         this.gameState.playerHands[name] = [];
     }
 
+    guessColor(playerKey, cardIndex, hexCode) {
+        this.gameState.playerHands[playerKey][cardIndex].color_guess = hexCode;
+    }
+
+    guessNumber(playerKey, cardIndex, number) {
+        this.gameState.playerHands[playerKey][cardIndex].number_guess = number;
+    }
+
     _discardAndDraw(playerKey, cardIndex, actualDiscard) {
         let discarded = this.gameState.playerHands[playerKey].splice(cardIndex, 1);
         if (actualDiscard) {
-            this.gameState.discards.push(discarded[0]);
+            this.gameState.discards.push(discarded[0].id);
         }
         if (this.gameState.deck.length > 0) {
-            this.gameState.playerHands[playerKey].push(this.gameState.deck.pop());
+            let cardInfo = {
+                id: this.gameState.deck.pop()
+            };
+            this.gameState.playerHands[playerKey].push(cardInfo);
         }
     }
 
     playCard(playerKey, cardIndex) {
-        const color = this.gameState.playerHands[playerKey][cardIndex].substr(0,1);
-        const num = this.gameState.playerHands[playerKey][cardIndex].substr(1,1);
+        const color = this.gameState.playerHands[playerKey][cardIndex].id.substr(0,1);
+        const num = this.gameState.playerHands[playerKey][cardIndex].id.substr(1,1);
         if (this.gameState.progress[color] + 1 == num) {
             this.gameState.progress[color]++;
             this._discardAndDraw(playerKey, cardIndex, false);

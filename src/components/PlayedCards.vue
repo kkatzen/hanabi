@@ -3,7 +3,7 @@
         <h2>Played cards</h2>
         <ol class="card-list">
             <li v-for="cardId of cardIds" :key=cardId>
-                <card :uniqueId=cardId />
+                <card :cardId=cardId />
             </li>
         </ol>
     </div>

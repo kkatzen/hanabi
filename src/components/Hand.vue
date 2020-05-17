@@ -10,19 +10,18 @@
             <md-button @click=giveHint>Give Hint</md-button>
         </div>
         <ol class="card-list">
-            <li v-for="(cardId, cardIndex) in cardsInHand" :key=cardId>
-                <card :uniqueId=cardId
-                      :playerKey=playerKey
+            <li v-for="(cardInfo, cardIndex) in cardsInHand" :key=cardInfo.id>
+                <card-in-hand :playerKey=playerKey
                       :cardIndex=cardIndex
                       :activePlayer=activePlayer>
-                </card>
+                </card-in-hand>
             </li>
         </ol>
     </div>
 </template>
 
 <script>
-import Card from '@/components/Card'
+import CardInHand from '@/components/CardInHand'
 import CardManager from '@/CardManager'
 const fb = require('./../firebaseConfig.js')
 
@@ -52,7 +51,7 @@ export default {
         }
     },
     components: {
-        'card': Card,
+        'card-in-hand': CardInHand,
     },
     methods: {
         giveHint() {

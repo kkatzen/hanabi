@@ -5,6 +5,15 @@
         No game found.
       </h1>
       <div v-else>
+        <div class="right-sidebar">
+          <div class="discard" v-if="myGame.discards.length > 0">
+            <h2>Discarded Cards:</h2>
+            <card v-for="cardId in myGame.discards"
+                  :key=cardId
+                  :cardId=cardId>
+            </card>
+          </div>
+        </div>
         <div class="left-sidebar">
           <h2>{{hintText}}</h2>
           <deck />
@@ -12,17 +21,9 @@
           <md-button @click="deleteGame">Delete Game</md-button>
         </div>
 
-        <hand v-for="(hand, playerKey) in myGame.playerHands"
+        <hand v-for="playerKey in playerKeys"
             :key=playerKey
             :playerKey=playerKey />
-
-        <div class="discard" v-if="myGame.discards > 0">
-          <h2>Discarded Cards:</h2>
-          <card v-for="cardId in myGame.discards"
-                :key=cardId
-                :uniqueId=cardId>
-          </card>
-        </div>
       </div>
   </div>
 </template>
@@ -48,6 +49,9 @@ export default {
     },
     hintText() {
       return this.myGame.remainingHints + " hints remain";
+    },
+    playerKeys() {
+      return Object.keys(this.myGame.playerHands).sort();
     }
   },
   methods: {
@@ -92,6 +96,12 @@ a {
 }
 .left-sidebar {
   float: left;
+  background-color: #D8E8F0;
+  padding: 10px;
+  margin: 20px;
+}
+.right-sidebar {
+  float: right;
   background-color: #D8E8F0;
   padding: 10px;
   margin: 20px;
