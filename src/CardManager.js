@@ -27,7 +27,17 @@ class CardManager {
         this.nextPlayer();
     }
 
-    giveHint() {
+    giveHint(playerKey, hint) {
+        let numberHint = parseInt(hint);
+        const substrIndex = isNaN(numberHint) ? 0 : 1;
+        const hintType = isNaN(numberHint) ? "colorHinted" : "numberHinted";
+
+        for(let cardInfo of this.gameState.playerHands[playerKey]) {
+            if (cardInfo.id.substr(substrIndex,1) == hint) {
+                cardInfo[hintType] = true;
+            }
+        }
+
         if (this.gameState.remainingHints > 0) {
             this.gameState.remainingHints--;
             this.nextPlayer();
@@ -86,25 +96,13 @@ class CardManager {
         this.gameState.playerHands[name] = [];
     }
 
-    guessColor(playerKey, cardIndex, hexCode) {
-        this.gameState.playerHands[playerKey][cardIndex].color_guess = hexCode;
-    }
-
-    guessNumber(playerKey, cardIndex, number) {
-        this.gameState.playerHands[playerKey][cardIndex].number_guess = number;
-    }
-
     _newCardBackgroundId(playerKey) {
         const cardInfos = this.gameState.playerHands[playerKey];
-        console.log("_newCardBackgroundId", this.gameState);
         const indices = cardInfos.map(ci => ci.backgroundId);
-        console.log(indices);
         let indexSum = 0;
         for (let index of indices) {
-            console.log(index);
             indexSum += parseInt(index);
         }
-        console.log(indexSum);
         return 15 - indexSum;
     }
 
@@ -147,6 +145,10 @@ class CardManager {
 
     _forceSetProgress(progress) {
         this.gameState.progress = progress;
+    }
+
+    _forceSetActivePlayer(activePlayer) {
+       this.gameState.activePlayer = activePlayer;
     }
 }
 

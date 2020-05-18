@@ -7,20 +7,7 @@
           <md-card-header>
               <div class="md-title">{{displayNumber}}</div>
           </md-card-header>
-          <div v-if="!myHand">
-            <md-card-header :style="{backgroundColor: guessedColor}">
-              {{guessedNumber}}
-            </md-card-header>
-          </div>
         </md-card-area>
-        <div v-if="myHand">
-          <md-card-actions>
-            <md-button @click=guessColor>Guess Color</md-button>
-         </md-card-actions>
-          <md-card-actions>
-            <md-button @click=guessNumber>Guess Number</md-button>
-         </md-card-actions>
-        </div>
         <div v-if="isPlayableNow">
           <md-card-actions>
             <md-button @click=playCard>Play</md-button>
@@ -59,11 +46,10 @@ export default {
 	},
 	computed: { 
     backgroundColorStyles() {
-      console.log("this.cardInfo.color_guess", this.cardInfo.color_guess)
-      let color = this.cardInfo.color_guess ? colorMap[this.cardInfo.color_guess] : "#ffffff";
+      let color = this.cardInfo.colorHinted || !this.myHand ? this.color : "#ffffff";
       const styles = {
         width: "130px",
-        height: "288px",
+        height: "72px",
         position: "absolute",
         backgroundColor: color
       };
@@ -72,16 +58,12 @@ export default {
     backgroundImageStyles() {
       const styles = {
         width: "130px",
-        height: "288px",
+        height: "72px",
         position: "absolute"
       };
-      if(!this.myHand) {
-        styles["backgroundColor"] = this.color;
-      } else {
-        styles["backgroundColor"] = "#ffffff";
-        styles["backgroundImage"] = "url('static/pattern" + this.cardInfo.backgroundId + ".png";
-        styles["opacity"] = ".1";
-      }
+      styles["backgroundColor"] = "#ffffff";
+      styles["backgroundImage"] = "url('static/pattern" + this.cardInfo.backgroundId + ".png";
+      styles["opacity"] = ".1";
       return styles;
     },
     color() {
@@ -97,17 +79,7 @@ export default {
       return this.playerKey == this.activePlayer && this.playerKey == this.$store.state.myName;
     },
     displayNumber () {
-      if (!this.myHand) {
-        return this.number;
-      }
-      return this.cardInfo.number_guess ? this.cardInfo.number_guess  + "?" : "???";
-    },
-    guessedColor() {
-      console.log("this.cardInfo.color_guess", this.cardInfo.color_guess);
-      return this.cardInfo.color_guess ? "#" + this.cardInfo.color_guess : "grey";
-    },
-    guessedNumber() {
-      return this.cardInfo.number_guess ? this.cardInfo.number_guess : "???";
+      return this.cardInfo.numberHinted || !this.myHand ? this.number : "???";
     },
     cardId () {
       return this.uniqueId != undefined ? this.uniqueId : this.cardInfo.id;
@@ -139,32 +111,6 @@ export default {
         };
         this.$store.dispatch("updateGame", gameUpdate);
     },
-    guessColor() {
-      let color = prompt("Color? r g b y p only");
-      if (color == undefined || color == "") {
-        return;
-      }
-      let cardManager = new CardManager(this.$store.state.myGame);
-      cardManager.guessColor(this.playerKey, this.cardIndex, color);
-        let gameUpdate = {
-            gameId: this.$store.state.myGameId,
-            gameState: cardManager.gameState
-        };
-        this.$store.dispatch("updateGame", gameUpdate);
-    },
-    guessNumber() {
-      let number = prompt("number? just a sringn.");
-      if (number == undefined || number == "") {
-        return;
-      }
-      let cardManager = new CardManager(this.$store.state.myGame);
-      cardManager.guessNumber(this.playerKey, this.cardIndex, number);
-        let gameUpdate = {
-            gameId: this.$store.state.myGameId,
-            gameState: cardManager.gameState
-        };
-        this.$store.dispatch("updateGame", gameUpdate);
-    }
   },
 }
 </script>
@@ -177,11 +123,5 @@ export default {
 }
 .card-card {
   background-color: transparent;
-}
-.white-drop {
-  width: 130px;
-  height: 288px;
-  position: absolute;
-  background-color: #ffffff;
 }
 </style>

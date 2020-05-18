@@ -122,4 +122,58 @@ describe('Gameplay', () => {
     expect(manager.gameState.progress).toEqual({'r': 0});
     expect(manager.gameState.deck).toEqual(['g1b']);
   })
+
+  it('gives a number hint', () => {
+    let manager = new CardManager(createBlankGame());
+    manager.addPlayer("bob");
+    manager.addPlayer("alice");
+    manager.dealCardsAndStartGame();
+
+    manager._forceSetPlayerHands(
+      {"alice":handOfCards("r5a","r2b","y3a","b2a")},
+      {"bob":handOfCards("a","b","c","d")}
+    );
+    manager._forceSetActivePlayer("bob");
+
+    expect(manager.giveHint("alice","2"));
+
+    expect(manager.gameState.activePlayer).toEqual("alice");
+    expect(manager.gameState.remainingHints).toEqual(7);
+
+    let hintedRedTwo = cardInfo("r2b", 2);
+    hintedRedTwo["numberHinted"] = true;
+    let hintedBlueTwo = cardInfo("b2a", 4);
+    hintedBlueTwo["numberHinted"] = true;
+
+    expect(manager.gameState.playerHands['alice']).toEqual([
+      cardInfo("r5a",1), hintedRedTwo, cardInfo("y3a",3), hintedBlueTwo, 
+    ]);
+  })
+
+  it('gives a color hint', () => {
+    let manager = new CardManager(createBlankGame());
+    manager.addPlayer("bob");
+    manager.addPlayer("alice");
+    manager.dealCardsAndStartGame();
+
+    manager._forceSetPlayerHands(
+      {"alice":handOfCards("r5a","r2b","y3a","b2a")},
+      {"bob":handOfCards("a","b","c","d")}
+    );
+    manager._forceSetActivePlayer("bob");
+
+    expect(manager.giveHint("alice","r"));
+
+    expect(manager.gameState.activePlayer).toEqual("alice");
+    expect(manager.gameState.remainingHints).toEqual(7);
+
+    let hintedRedTwo = cardInfo("r2b", 2);
+    hintedRedTwo["colorHinted"] = true;
+    let hintedRedFive = cardInfo("r5a", 1);
+    hintedRedFive["colorHinted"] = true;
+
+    expect(manager.gameState.playerHands['alice']).toEqual([
+      hintedRedFive, hintedRedTwo, cardInfo("y3a",3), cardInfo("b2a",4), 
+    ]);
+  })
 })

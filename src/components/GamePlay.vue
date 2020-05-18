@@ -5,7 +5,11 @@
         No game found.
       </h1>
       <div v-else>
-        <div class="right-sidebar">
+        <div class="left-sidebar">
+          <h2>{{hintText}}</h2>
+          <deck />
+          <played-cards />
+          <md-button @click="deleteGame">Delete Game</md-button>
           <div class="discard" v-if="myGame.discards.length > 0">
             <h2>Discarded Cards:</h2>
             <card v-for="cardId in myGame.discards"
@@ -13,12 +17,6 @@
                   :cardId=cardId>
             </card>
           </div>
-        </div>
-        <div class="left-sidebar">
-          <h2>{{hintText}}</h2>
-          <deck />
-          <played-cards />
-          <md-button @click="deleteGame">Delete Game</md-button>
         </div>
 
         <hand v-for="playerKey in playerKeys"
