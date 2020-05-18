@@ -15,7 +15,8 @@ class CardManager {
             Array.from(gameState.deck), //deck
             Object.assign({}, gameState.progress), //progress
             Array.from(gameState.discards), //discards
-            gameState.remainingHints // remainingHints
+            gameState.remainingHints, // remainingHints
+            gameState.misplays, // misplays
             );
     }
 
@@ -109,7 +110,7 @@ class CardManager {
     _discardAndDraw(playerKey, cardIndex, actualDiscard) {
         const newCardBackgroundId = this._newCardBackgroundId(playerKey);
         let discarded = this.gameState.playerHands[playerKey].splice(cardIndex, 1);
-        if (actualDiscard) {
+        if(actualDiscard) {
             this.gameState.discards.push(discarded[0].id);
         }
         if (this.gameState.deck.length > 0) {
@@ -130,7 +131,11 @@ class CardManager {
             this.nextPlayer();
             return true;
         }
-        this._discardAndDraw(playerKey, cardIndex, false);
+        this.gameState.misplays++;
+        if(this.gameState.misplays > 5) {
+            alert("game over!!! honor code. please don't cheat ;)");
+        }
+        this._discardAndDraw(playerKey, cardIndex, true);
         this.nextPlayer();
         return false;
     }
@@ -153,5 +158,5 @@ class CardManager {
 }
 
 // toggle for testing vs dev. why? i'm lazy
-//module.exports = CardManager;
-export default CardManager;
+module.exports = CardManager;
+//export default CardManager;

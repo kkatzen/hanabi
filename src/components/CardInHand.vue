@@ -17,6 +17,9 @@
          </md-card-actions>
         </div>
     </md-card>
+    <div v-if="!myHand" :style="hintedTextStyle">
+      {{hintedText}}
+    </div>
   </div>
 </template>
 
@@ -66,6 +69,19 @@ export default {
       styles["opacity"] = ".1";
       return styles;
     },
+    hintedTextStyle() {
+      const styles = {
+        backgroundColor: "#eeeeee",
+        fontSize: "14pt"
+      };
+      if (this.cardInfo.colorHinted) { 
+        styles["backgroundColor"] = this.color
+      }
+      return styles;
+    },
+    hintedText() {
+      return this.cardInfo.numberHinted ? this.number : "??";
+    },
     color() {
         return colorMap[this.cardId.substring(0,1)]
     },
@@ -93,14 +109,13 @@ export default {
     playCard() {
       let cardManager = new CardManager(this.$store.state.myGame);
       if(!cardManager.playCard(this.playerKey, this.cardIndex)) {
-        alert("invalid!");
-      } else {
-        let gameUpdate = {
-            gameId: this.$store.state.myGameId,
-            gameState: cardManager.gameState
-        };
-        this.$store.dispatch("updateGame", gameUpdate);
+        alert("invalid! card discarded. misplay!");
       }
+      let gameUpdate = {
+          gameId: this.$store.state.myGameId,
+          gameState: cardManager.gameState
+      };
+      this.$store.dispatch("updateGame", gameUpdate);
     },
     discardCard() {
       let cardManager = new CardManager(this.$store.state.myGame);
@@ -122,6 +137,6 @@ export default {
   margin: 10px;
 }
 .card-card {
-  background-color: transparent;
+  background-color: transparent !important;
 }
 </style>

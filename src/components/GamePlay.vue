@@ -6,6 +6,7 @@
       </h1>
       <div v-else>
         <div class="left-sidebar">
+          <h2>{{misplayText}}</h2>
           <h2>{{hintText}}</h2>
           <deck />
           <played-cards />
@@ -44,6 +45,9 @@ export default {
     ...mapState(["myName", "myGameId"]),
     myGame() {
       return this.$store.state.myGame;
+    },
+    misplayText() {
+      return this.myGame.misplays + " of 5 misplays";
     },
     hintText() {
       return this.myGame.remainingHints + " hints remain";

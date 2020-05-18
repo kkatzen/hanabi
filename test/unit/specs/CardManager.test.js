@@ -103,6 +103,7 @@ describe('Gameplay', () => {
     ]);
     expect(manager.gameState.progress).toEqual({'r': 2});
     expect(manager.gameState.deck).toEqual(['g1b']);
+    expect(manager.gameState.discards).toEqual([]);
   })
 
   it('invalid card play', () => {
@@ -121,6 +122,8 @@ describe('Gameplay', () => {
     ]);
     expect(manager.gameState.progress).toEqual({'r': 0});
     expect(manager.gameState.deck).toEqual(['g1b']);
+    expect(manager.gameState.discards).toEqual(['r5a']);
+    expect(manager.gameState.misplays).toEqual(1);
   })
 
   it('gives a number hint', () => {
