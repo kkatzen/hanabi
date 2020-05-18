@@ -64,7 +64,8 @@ class CardManager {
             let hand = [];
             while (hand.length < /*startingHandSize=*/4) {
                 let cardInfo = {
-                    id: shuffledDeck.pop()
+                    id: shuffledDeck.pop(),
+                    backgroundId: hand.length + 1
                 };
                 hand.push(cardInfo);
             }
@@ -93,14 +94,30 @@ class CardManager {
         this.gameState.playerHands[playerKey][cardIndex].number_guess = number;
     }
 
+    _newCardBackgroundId(playerKey) {
+        const cardInfos = this.gameState.playerHands[playerKey];
+        console.log("_newCardBackgroundId", this.gameState);
+        const indices = cardInfos.map(ci => ci.backgroundId);
+        console.log(indices);
+        let indexSum = 0;
+        for (let index of indices) {
+            console.log(index);
+            indexSum += parseInt(index);
+        }
+        console.log(indexSum);
+        return 15 - indexSum;
+    }
+
     _discardAndDraw(playerKey, cardIndex, actualDiscard) {
+        const newCardBackgroundId = this._newCardBackgroundId(playerKey);
         let discarded = this.gameState.playerHands[playerKey].splice(cardIndex, 1);
         if (actualDiscard) {
             this.gameState.discards.push(discarded[0].id);
         }
         if (this.gameState.deck.length > 0) {
             let cardInfo = {
-                id: this.gameState.deck.pop()
+                id: this.gameState.deck.pop(),
+                backgroundId: newCardBackgroundId
             };
             this.gameState.playerHands[playerKey].push(cardInfo);
         }
@@ -115,6 +132,8 @@ class CardManager {
             this.nextPlayer();
             return true;
         }
+        this._discardAndDraw(playerKey, cardIndex, false);
+        this.nextPlayer();
         return false;
     }
 
