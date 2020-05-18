@@ -1,6 +1,8 @@
 <template>
   <div class="card">
-    <md-card :style="{backgroundColor: displayColor}">
+    <div class="background-color" :style="backgroundColorStyles" />
+    <div class="background-image" :style="backgroundImageStyles" />
+    <md-card class="card-card">
         <md-card-area>
           <md-card-header>
               <div class="md-title">{{displayNumber}}</div>
@@ -56,6 +58,32 @@ export default {
     },
 	},
 	computed: { 
+    backgroundColorStyles() {
+      console.log("this.cardInfo.color_guess", this.cardInfo.color_guess)
+      let color = this.cardInfo.color_guess ? colorMap[this.cardInfo.color_guess] : "#ffffff";
+      const styles = {
+        width: "130px",
+        height: "288px",
+        position: "absolute",
+        backgroundColor: color
+      };
+      return styles;
+    },
+    backgroundImageStyles() {
+      const styles = {
+        width: "130px",
+        height: "288px",
+        position: "absolute"
+      };
+      if(!this.myHand) {
+        styles["backgroundColor"] = this.color;
+      } else {
+        styles["backgroundColor"] = "#ffffff";
+        styles["backgroundImage"] = "url('static/pattern" + this.cardInfo.backgroundId + ".png";
+        styles["opacity"] = ".1";
+      }
+      return styles;
+    },
     color() {
         return colorMap[this.cardId.substring(0,1)]
     },
@@ -67,12 +95,6 @@ export default {
     },
     isPlayableNow() {
       return this.playerKey == this.activePlayer && this.playerKey == this.$store.state.myName;
-    },
-    displayColor() {
-      if (!this.myHand) {
-        return this.color;
-      }
-      return this.cardInfo.color_guess ? "#" + this.cardInfo.color_guess : "grey";
     },
     displayNumber () {
       if (!this.myHand) {
@@ -118,7 +140,7 @@ export default {
         this.$store.dispatch("updateGame", gameUpdate);
     },
     guessColor() {
-      let color = prompt("Color? Hexcode string plz");
+      let color = prompt("Color? r g b y p only");
       if (color == undefined || color == "") {
         return;
       }
@@ -152,5 +174,14 @@ export default {
 .card {
   width: 130px;
   margin: 10px;
+}
+.card-card {
+  background-color: transparent;
+}
+.white-drop {
+  width: 130px;
+  height: 288px;
+  position: absolute;
+  background-color: #ffffff;
 }
 </style>
