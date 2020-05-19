@@ -46,11 +46,11 @@
                 </p>
             </div>
             <div v-else>
-                <div v-if="gameIsLost">
-                    <h1>You Lost!!!</h1>
+                <div v-if="gameIsLost" class="end-game">
+                   You Lost!!!
                 </div>
-                <div v-else-if="gameIsWon">
-                    <h1>You Won!!!</h1>
+                <div v-else-if="gameIsWon" class="end-game">
+                   You Won!!!
                 </div>
                 <game-play />
             </div>
@@ -183,5 +183,11 @@ export default {
 .current-players-list {
     width: 40%;
     margin: auto;
+}
+.end-game {
+    font-size: 100px;
+    line-height: 100px;
+    text-align: center;
+    padding: 20px;
 }
 </style>
