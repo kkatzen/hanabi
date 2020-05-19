@@ -10,19 +10,12 @@
           <h2>{{hintText}}</h2>
           <deck />
           <played-cards />
-          <div class="discard" v-if="myGame.discards.length > 0">
-            <h2>Discarded Cards:</h2>
-            <card v-for="cardId in myGame.discards"
-                  :key=cardId
-                  :cardId=cardId>
-            </card>
-          </div>
           <md-button @click="deleteGame">Delete Game</md-button>
         </div>
-
         <hand v-for="playerKey in playerKeys"
             :key=playerKey
             :playerKey=playerKey />
+        <discards />
       </div>
   </div>
 </template>
@@ -32,6 +25,7 @@ const fb = require('../firebaseConfig.js')
 import Card from '@/components/Card'
 import Hand from '@/components/Hand'
 import PlayedCards from '@/components/PlayedCards'
+import Discards from '@/components/Discards'
 import CardManager from '@/CardManager'
 import Deck from '@/components/Deck'
 import {GameState, createRandomGame} from '@/GameState'
@@ -71,6 +65,7 @@ export default {
     'played-cards': PlayedCards,
     'hand': Hand,
     'deck': Deck,
+    'discards': Discards,
   },
 }
 </script>
