@@ -1,6 +1,18 @@
 import { GameState } from "./GameState";
 
 const MAX_HINTS = 8;
+const PLAYERS_TO_HAND_SIZE = {
+    2: 5,
+    3: 5,
+    4: 4,
+    5: 4,
+}
+const PLAYERS_TO_PATTERN_INT = {
+    2: 21, // 1 + 2 + 3 + 4 + 5 + 6
+    3: 21,
+    4: 15, // 1 + 2 + 3 + 4 + 5
+    5: 15,
+}
 
 class CardManager {
     constructor(gameState) {
@@ -73,7 +85,7 @@ class CardManager {
         
         for (let playerName in this.gameState.playerHands) { 
             let hand = [];
-            while (hand.length < /*startingHandSize=*/4) {
+            while (hand.length < PLAYERS_TO_HAND_SIZE[Object.keys(this.gameState.playerHands).length]) {
                 let cardInfo = {
                     id: shuffledDeck.pop(),
                     backgroundId: hand.length + 1
@@ -104,7 +116,10 @@ class CardManager {
         for (let index of indices) {
             indexSum += parseInt(index);
         }
-        return 15 - indexSum;
+        console.log("Object.keys(this.gameState.playerHands).length", Object.keys(this.gameState.playerHands).length);
+        console.log("PLAYERS_TO_PATTERN_INT", PLAYERS_TO_PATTERN_INT);
+        console.log("PLAYERS_TO_PATTERN_INT[Object.keys(this.gameState.playerHands).length]",PLAYERS_TO_PATTERN_INT[Object.keys(this.gameState.playerHands).length]);
+        return PLAYERS_TO_PATTERN_INT[Object.keys(this.gameState.playerHands).length.toString()] - indexSum;
     }
 
     _discardAndDraw(playerKey, cardIndex, actualDiscard) {
@@ -129,19 +144,19 @@ class CardManager {
             this.gameState.progress[color]++;
             this._discardAndDraw(playerKey, cardIndex, false);
             this.nextPlayer();
+            if (this.gameState.remainingHints < 8){
+                this.gameState.remainingHints++;
+            } 
             return true;
         }
         this.gameState.misplays++;
-        if(this.gameState.misplays > 5) {
-            alert("game over!!! honor code. please don't cheat ;)");
-        }
         this._discardAndDraw(playerKey, cardIndex, true);
         this.nextPlayer();
         return false;
     }
 
-    _forceSetPlayerHands(playerHands) {
-        this.gameState.playerHands = playerHands;
+    _forceSetPlayerHand(playerKey, playerHand) {
+        this.gameState.playerHands[playerKey] = playerHand;
     }
 
     _forceSetDeck(deck) {
@@ -155,8 +170,12 @@ class CardManager {
     _forceSetActivePlayer(activePlayer) {
        this.gameState.activePlayer = activePlayer;
     }
+
+    _forceSetRemainingHints(remainingHints) {
+        this.gameState.remainingHints = remainingHints;
+    }
 }
 
 // toggle for testing vs dev. why? i'm lazy
-module.exports = CardManager;
-//export default CardManager;
+//module.exports = CardManager;
+export default CardManager;

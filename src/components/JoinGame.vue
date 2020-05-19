@@ -29,8 +29,11 @@
                     </md-list>
                 </div>
                 <p>
-                    <h3 v-if="currentNumberPlayers < 3">
-                        At least 3 players required.
+                    <h3 v-if="currentNumberPlayers < 2">
+                        At least 2 players required.
+                    </h3>
+                    <h3 v-if="currentNumberPlayers == 5">
+                        Maximum of 5 players
                     </h3>
                     <md-button @click="startGame" :disabled="disableStartGame">Start game!!!</md-button>
                 </p>
@@ -41,9 +44,14 @@
                 <p>
                     <md-button @click="deleteGame">Cancel and delete</md-button>
                 </p>
-                <!--<router-link :to="gameUrl">{{gameId}}</router-link>-->
             </div>
             <div v-else>
+                <div v-if="gameIsLost">
+                    <h1>You Lost!!!</h1>
+                </div>
+                <div v-else-if="gameIsWon">
+                    <h1>You Won!!!</h1>
+                </div>
                 <game-play />
             </div>
         </div>
@@ -55,7 +63,6 @@
 
 <script>
 const fb = require('../firebaseConfig.js')
-import {GameState, GameStateConverter} from '@/GameState'
 import firebase from 'firebase'
 import { db } from '../main'
 import CardManager from '@/CardManager'
@@ -125,7 +132,7 @@ export default {
             return this.$store.state.myName != null;
         },
         disableStartGame() {
-            return this.currentNumberPlayers < 3
+            return this.currentNumberPlayers < 2 || this.currentNumberPlayers == 5;
         },
         gameExists() {
             return this.gameState != undefined && this.gameState != null && this.gameState != {} && this.gameId != "" && this.gameId != undefined && this.gameId != null;
@@ -135,6 +142,19 @@ export default {
         },
         isJoinPhase() {
             return this.gameState.activePlayer == null;
+        },
+        gameIsLost() {
+            return this.gameState != undefined && (this.gameState.misplays == 3 || (this.gameState.deck && this.gameState.deck.length == 0));
+        },
+        gameIsWon() {
+            if (this.gameState != undefined) {
+                return false;
+            }
+            let sum = 0;
+            for (let color of Object.keys(this.gameState.progress)){
+                sum += this.gameState.progress[color];
+            }
+            return sum == 25;
         },
         joinButtonDisabled() {
             return !this.userName;

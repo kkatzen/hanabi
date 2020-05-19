@@ -10,7 +10,6 @@
           <h2>{{hintText}}</h2>
           <deck />
           <played-cards />
-          <md-button @click="deleteGame">Delete Game</md-button>
           <div class="discard" v-if="myGame.discards.length > 0">
             <h2>Discarded Cards:</h2>
             <card v-for="cardId in myGame.discards"
@@ -18,6 +17,7 @@
                   :cardId=cardId>
             </card>
           </div>
+          <md-button @click="deleteGame">Delete Game</md-button>
         </div>
 
         <hand v-for="playerKey in playerKeys"
@@ -47,7 +47,7 @@ export default {
       return this.$store.state.myGame;
     },
     misplayText() {
-      return this.myGame.misplays + " of 5 misplays";
+      return this.myGame.misplays + " of 3 misplays";
     },
     hintText() {
       return this.myGame.remainingHints + " hints remain";
