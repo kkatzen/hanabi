@@ -7,7 +7,7 @@
       <div v-else>
         <div class="left-sidebar">
           <h2>{{misplayText}}</h2>
-          <h2>{{hintText}}</h2>
+          <remaining-hints />
           <deck />
           <played-cards />
           <md-button @click="deleteGame">Delete Game</md-button>
@@ -24,6 +24,7 @@
 const fb = require('../firebaseConfig.js')
 import Card from '@/components/Card'
 import Hand from '@/components/Hand'
+import RemainingHints from '@/components/RemainingHints'
 import PlayedCards from '@/components/PlayedCards'
 import Discards from '@/components/Discards'
 import CardManager from '@/CardManager'
@@ -42,9 +43,6 @@ export default {
     },
     misplayText() {
       return this.myGame.misplays + " of 3 misplays";
-    },
-    hintText() {
-      return this.myGame.remainingHints + " hints remain";
     },
     playerKeys() {
       return Object.keys(this.myGame.playerHands).sort();
@@ -66,6 +64,7 @@ export default {
     'hand': Hand,
     'deck': Deck,
     'discards': Discards,
+    'remaining-hints': RemainingHints,
   },
 }
 </script>
