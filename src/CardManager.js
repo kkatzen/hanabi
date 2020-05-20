@@ -29,14 +29,16 @@ class CardManager {
             Array.from(gameState.discards), //discards
             gameState.remainingHints, // remainingHints
             gameState.misplays, // misplays
+            Array.from(gameState.actionLog), //actionLog
             );
     }
 
     discardAndDraw(playerKey, cardIndex) {
-        this._discardAndDraw(playerKey, cardIndex, true);
+        const discardedId = this._discardAndDraw(playerKey, cardIndex, true);
         if (this.gameState.remainingHints < MAX_HINTS){
             this.gameState.remainingHints++;
         }
+        this.gameState.actionLog.push(playerKey + " discarded a " + discardedId.substr(0,2));
         this.nextPlayer();
     }
 
@@ -45,14 +47,17 @@ class CardManager {
         const substrIndex = isNaN(numberHint) ? 0 : 1;
         const hintType = isNaN(numberHint) ? "colorHinted" : "numberHinted";
 
+        let numCards = 0;
         for(let cardInfo of this.gameState.playerHands[playerKey]) {
             if (cardInfo.id.substr(substrIndex,1) == hint) {
                 cardInfo[hintType] = true;
+                numCards++;
             }
         }
 
         if (this.gameState.remainingHints > 0) {
             this.gameState.remainingHints--;
+            this.gameState.actionLog.push(this.gameState.activePlayer + " gave a hint to " + playerKey + " about " + numCards + " card(s) that are " + hint);
             this.nextPlayer();
             return true;
         } else {
@@ -135,6 +140,7 @@ class CardManager {
             };
             this.gameState.playerHands[playerKey].push(cardInfo);
         }
+        return discarded[0].id;
     }
 
     playCard(playerKey, cardIndex) {
@@ -147,11 +153,13 @@ class CardManager {
             } 
             this._discardAndDraw(playerKey, cardIndex, false);
             this.nextPlayer();
+            this.gameState.actionLog.push(playerKey + " successfully played a " + color + " " + num);
             return true;
         }
         this.gameState.misplays++;
         this._discardAndDraw(playerKey, cardIndex, true);
         this.nextPlayer();
+        this.gameState.actionLog.push(playerKey + " misplayed a " + color + " " + num);
         return false;
     }
 

@@ -51,7 +51,7 @@ export default {
     backgroundColorStyles() {
       let color = this.cardInfo.colorHinted || !this.myHand ? this.color : "#ffffff";
       const styles = {
-        width: "130px",
+        width: "100px",
         height: "72px",
         position: "absolute",
         backgroundColor: color
@@ -60,7 +60,7 @@ export default {
     },
     backgroundImageStyles() {
       const styles = {
-        width: "130px",
+        width: "100px",
         height: "72px",
         position: "absolute"
       };
@@ -100,7 +100,7 @@ export default {
       return this.playerKey == this.activePlayer && this.playerKey == this.$store.state.myName;
     },
     displayNumber () {
-      if (this.myHand && this.cardInfo.numberHinted) return "???";
+      if (this.myHand && !this.cardInfo.numberHinted) return "???";
       if (this.number == "5") return "5!!!"
       return this.number;
     },
@@ -108,7 +108,6 @@ export default {
       return this.uniqueId != undefined ? this.uniqueId : this.cardInfo.id;
     },
     cardInfo() {
-      console.log(this.$store.state.myGame.playerHands[this.playerKey][this.cardIndex]);
       return this.$store.state.myGame.playerHands[this.playerKey][this.cardIndex];
     }
 	},
@@ -140,7 +139,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .card {
-  width: 130px;
+  width: 100px;
   margin: 10px;
 }
 .card-card {

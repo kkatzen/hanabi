@@ -1,7 +1,7 @@
 import firebase from 'firebase'
 
 class GameState {
-    constructor(activePlayer, playerHands, deck, progress, discards, remainingHints, misplays) {
+    constructor(activePlayer, playerHands, deck, progress, discards, remainingHints, misplays, actionLog) {
         this.activePlayer = activePlayer;
         this.playerHands = playerHands; // {}
         this.deck = deck; // []
@@ -9,6 +9,7 @@ class GameState {
         this.discards = discards; // []
         this.remainingHints = remainingHints;
         this.misplays = misplays;
+        this.actionLog = actionLog;
     }
 }
 const createBlankGame = function() {
@@ -20,6 +21,7 @@ const createBlankGame = function() {
         [], //discards
         8, // remainingHints
         0, // misplays
+        [], //actionLog
         );
 }
 const GameStateConverter = {
@@ -32,6 +34,7 @@ const GameStateConverter = {
             discards: gameState.discards,
             remainingHints: gameState.remainingHints,
             misplays: gameState.misplays,
+            actionLog: gameState.actionLog,
         };
         console.log("toFirestore newGameState", newGameState)
         return newGameState;
@@ -45,7 +48,8 @@ const GameStateConverter = {
             data.progress,
             data.discards,
             data.remainingHints,
-            data.misplays);
+            data.misplays,
+            data.actionLog);
         console.log("fromFirestore newGameState", newGameState)
         return newGameState;
     }

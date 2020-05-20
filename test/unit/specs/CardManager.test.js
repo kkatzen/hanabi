@@ -72,6 +72,7 @@ describe('Gameplay', () => {
     manager.addPlayer("bob");
     manager.addPlayer("cobb");
     manager.dealCardsAndStartGame();
+    manager._forceSetPlayerHand("bob",handOfCards("r1a","b","c","d"));
 
     let nextCardInDeck = manager.gameState.deck[manager.gameState.deck.length - 1];
     let previousDeckLength = manager.gameState.deck.length;
@@ -84,6 +85,8 @@ describe('Gameplay', () => {
   
     // Deck has one fewer card
     expect(manager.gameState.deck.length).toEqual(previousDeckLength - 1);
+
+    expect(manager.gameState.actionLog[0]).toEqual("bob discarded a r1");
   })
 
   it('discarding when deck is empty', () => {
@@ -106,6 +109,7 @@ describe('Gameplay', () => {
     expect(manager.gameState.progress).toEqual({});
     expect(manager.gameState.deck).toEqual([]);
     expect(manager.gameState.discards).toEqual(['r1a']);
+    expect(manager.gameState.actionLog[0]).toEqual("bob discarded a r1");
   })
 
   it('intantiate with specific cardmap', () => {
@@ -146,6 +150,7 @@ describe('Gameplay', () => {
     expect(manager.gameState.deck).toEqual(['g1b']);
     expect(manager.gameState.discards).toEqual([]);
     expect(manager.gameState.remainingHints).toEqual(5);
+    expect(manager.gameState.actionLog[0]).toEqual("bob successfully played a r 2");
   })
 
   it('valid card play with 3 players and its a five', () => {
@@ -169,6 +174,7 @@ describe('Gameplay', () => {
     expect(manager.gameState.deck).toEqual(['g1b']);
     expect(manager.gameState.discards).toEqual([]);
     expect(manager.gameState.remainingHints).toEqual(6);
+    expect(manager.gameState.actionLog[0]).toEqual("bob successfully played a r 5");
   })
 
   it('invalid card play', () => {
@@ -192,6 +198,7 @@ describe('Gameplay', () => {
     expect(manager.gameState.deck).toEqual(['g1b']);
     expect(manager.gameState.discards).toEqual(['r5a']);
     expect(manager.gameState.misplays).toEqual(1);
+    expect(manager.gameState.actionLog[0]).toEqual("bob misplayed a r 5");
   })
 
   it('gives a number hint', () => {
@@ -218,6 +225,7 @@ describe('Gameplay', () => {
     expect(manager.gameState.playerHands['alice']).toEqual([
       cardInfo("r5a",1), hintedRedTwo, cardInfo("y3a",3), hintedBlueTwo, 
     ]);
+    expect(manager.gameState.actionLog[0]).toEqual("bob gave a hint to alice about 2 card(s) that are 2");
   })
 
   it('gives a color hint', () => {
@@ -244,5 +252,6 @@ describe('Gameplay', () => {
     expect(manager.gameState.playerHands['alice']).toEqual([
       hintedRedFive, hintedRedTwo, cardInfo("y3a",3), cardInfo("b2a",4), 
     ]);
+    expect(manager.gameState.actionLog[0]).toEqual("bob gave a hint to alice about 2 card(s) that are r");
   })
 })

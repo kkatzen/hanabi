@@ -5,6 +5,9 @@
         No game found.
       </h1>
       <div v-else>
+        <div class="right-sidebar">
+          <action-log />
+        </div>
         <div class="left-sidebar">
           <h2>{{misplayText}}</h2>
           <remaining-hints />
@@ -28,6 +31,7 @@ import RemainingHints from '@/components/RemainingHints'
 import PlayedCards from '@/components/PlayedCards'
 import Discards from '@/components/Discards'
 import CardManager from '@/CardManager'
+import ActionLog from '@/components/ActionLog'
 import Deck from '@/components/Deck'
 import {GameState, createRandomGame} from '@/GameState'
 import firebase from 'firebase'
@@ -65,6 +69,7 @@ export default {
     'deck': Deck,
     'discards': Discards,
     'remaining-hints': RemainingHints,
+    'action-log': ActionLog,
   },
 }
 </script>
