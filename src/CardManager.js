@@ -142,11 +142,11 @@ class CardManager {
         const num = this.gameState.playerHands[playerKey][cardIndex].id.substr(1,1);
         if (this.gameState.progress[color] + 1 == num) {
             this.gameState.progress[color]++;
-            this._discardAndDraw(playerKey, cardIndex, false);
-            this.nextPlayer();
-            if (this.gameState.remainingHints < 8){
+            if (this.gameState.progress[color] == 5 && this.gameState.remainingHints < 8){
                 this.gameState.remainingHints++;
             } 
+            this._discardAndDraw(playerKey, cardIndex, false);
+            this.nextPlayer();
             return true;
         }
         this.gameState.misplays++;

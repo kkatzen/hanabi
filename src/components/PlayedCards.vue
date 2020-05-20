@@ -20,7 +20,7 @@ export default {
     computed: { 
       cardIds() {
           let cardIds = [];
-          for (let key in this.$store.state.myGame.progress) {
+          for (let key of Object.keys(this.$store.state.myGame.progress).sort()) {
               // construct card ID so card component can render properly
               cardIds.push(key + this.$store.state.myGame.progress[key] + "-p");
           }

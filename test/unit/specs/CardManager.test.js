@@ -135,7 +135,8 @@ describe('Gameplay', () => {
     manager._forceSetPlayerHand("bob",handOfCards("r2a","b","c","d"));
     manager._forceSetProgress({'r': 1});
     manager._forceSetDeck(['g1b','y2a']);
-    
+    manager._forceSetRemainingHints(5);
+
     expect(manager.playCard("bob",0)).toEqual(true);
 
     expect(manager.gameState.playerHands['bob']).toEqual([
@@ -144,6 +145,7 @@ describe('Gameplay', () => {
     expect(manager.gameState.progress).toEqual({'r': 2});
     expect(manager.gameState.deck).toEqual(['g1b']);
     expect(manager.gameState.discards).toEqual([]);
+    expect(manager.gameState.remainingHints).toEqual(5);
   })
 
   it('valid card play with 3 players and its a five', () => {
