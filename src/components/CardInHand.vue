@@ -71,8 +71,11 @@ export default {
     },
     hintedTextStyle() {
       const styles = {
+        border: "1px solid grey",
         backgroundColor: "#eeeeee",
-        fontSize: "14pt"
+        fontSize: "23px",
+        lineHeight: "30px",
+        height: "30px",
       };
       if (this.cardInfo.colorHinted) { 
         styles["backgroundColor"] = this.color
@@ -80,7 +83,9 @@ export default {
       return styles;
     },
     hintedText() {
-      return this.cardInfo.numberHinted ? this.number : "??";
+      if (!this.cardInfo.numberHinted) return "";
+      if (this.number == 5) return "5!!!";
+      return this.number;
     },
     color() {
         return colorMap[this.cardId.substring(0,1)]
@@ -95,7 +100,9 @@ export default {
       return this.playerKey == this.activePlayer && this.playerKey == this.$store.state.myName;
     },
     displayNumber () {
-      return this.cardInfo.numberHinted || !this.myHand ? this.number : "???";
+      if (this.myHand && this.cardInfo.numberHinted) return "???";
+      if (this.number == "5") return "5!!!"
+      return this.number;
     },
     cardId () {
       return this.uniqueId != undefined ? this.uniqueId : this.cardInfo.id;
